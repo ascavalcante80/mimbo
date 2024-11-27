@@ -1,0 +1,32 @@
+{
+  "app_bar_title_loading_user_s": "Loading user",
+  "@app_bar_title_loading_user_s": {
+    "description": "App bar Title of screen UserLoadingScreen."
+  },
+  "label_loading_user_message": "Loading user...",
+  "@label_loading_user_message": {
+    "description": "Message that appears when the user is being loaded in the UserLoadingScreen."
+  },
+
+
+  "app_bar_title_waiting_confirmation_email_s": "E-mail confirmation",
+  "@app_bar_title_waiting_confirmation_email_s": {
+    "description": "App bar Title of screen WaitingConfirmationEmail."
+  },
+  "label_verify_your_email": "Verify your e-mail",
+  "@label_verify_your_email": {
+    "description": "Message that appears when the confirmation e-mail has been sent in the WaitingConfirmationEmail."
+  },
+  "label_error_message_email_not_confirmed": "Your e-mail has not been confirmed yet. Please check your inbox and confirm your e-mail.",
+    "@label_error_message_email_not_confirmed": {
+        "description": "Message that appears when the user tries to access a page that requires a confirmed e-mail in the screen WaitingConfirmationEmail.."
+    },
+  "button_go_to_login": "Go to login",
+    "@button_go_to_login": {
+        "description": "Button that redirects the user to the login page in the WaitingConfirmationEmail."
+    },
+  "button_resend_email": "Resend e-mail",
+    "@button_resend_email": {
+        "description": "Button that resends the confirmation e-mail in the WaitingConfirmationEmail."
+    }
+}
