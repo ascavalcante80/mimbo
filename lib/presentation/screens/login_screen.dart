@@ -9,6 +9,7 @@ import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
+import 'package:mimbo/presentation/widget/widgets.dart';
 
 class AuthGate extends StatelessWidget {
   /// The [AuthGate] is a screen that allows the user to sign in or sign up.
@@ -270,7 +271,9 @@ class SignedOutScreen extends StatelessWidget {
       //     ],
       //   ),
       // ),
-      body: Placeholder(),
+      body: Column(
+        children: [Text('Sign out screen')],
+      ),
     );
   }
 }
@@ -301,7 +304,9 @@ class ResetPasswordScreen extends StatelessWidget {
       //     ],
       //   ),
       // ),
-      body: Placeholder(),
+      body: Column(
+        children: [Text('Reser password screen')],
+      ),
     );
   }
 }
@@ -334,45 +339,29 @@ class _UserCreatedScreenState extends State<UserCreatedScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   automaticallyImplyLeading: false,
-      //   title: Text(AppLocalizations.of(context)!.confirmationEmailTitle),
-      //   actions: const [
-      //     SignOutFromGnomeeButton(),
-      //   ],
-      // ),
-      // body: Padding(
-      //   padding: const EdgeInsets.all(10.0),
-      //   child: Column(
-      //     mainAxisAlignment: MainAxisAlignment.center,
-      //     crossAxisAlignment: CrossAxisAlignment.center,
-      //     children: [
-      //       Text(AppLocalizations.of(context)!.verifyYourInboxMessage),
-      //       const Gap(35),
-      //       goToSignButton(context),
-      //     ],
-      //   ),
-      // ),
-      body: Placeholder(),
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        // title: Text(AppLocalizations.of(context)!.confirmationEmailTitle),
+        title: Text('Confirmation email title'),
+        // actions: const [
+        //   SignOutFromGnomeeButton(),
+        // ],
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            // Text(AppLocalizations.of(context)!.verifyYourInboxMessage),
+            Text('Verify your inbox message'),
+            const Gap(35),
+            const GoToLoginScreenButton(),
+          ],
+        ),
+      ),
     );
   }
-
-  // TextButton goToSignButton(BuildContext context) {
-  //   return TextButton(
-  //     onPressed: () async {
-  //       log('Signing user out!');
-  //       await FirebaseAuth.instance.signOut();
-  //
-  //       if (context.mounted) {
-  //         Navigator.of(context).pushAndRemoveUntil(
-  //           MaterialPageRoute(builder: (context) => const AuthGate()),
-  //           (route) => false,
-  //         );
-  //       }
-  //     },
-  //     child: Text(AppLocalizations.of(context)!.goToLoginMessage),
-  //   );
-  // }
 }
 
 class WaitingConfirmationEmail extends StatefulWidget {
@@ -440,23 +429,29 @@ class _WaitingConfirmationEmailState extends State<WaitingConfirmationEmail> {
               icon: const Icon(Icons.logout)),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(AppLocalizations.of(context)!.label_verify_your_email),
-            const Gap(20),
-            // timerStarted
-            //     ? Text(AppLocalizations.of(context)!.countingDownWaitMessage(
-            //         SessionConfig.emailResendCounter.toString()))
-            //     : resendEmailButton(),
-            // go to sign in screen button
-            const Gap(40),
-            goToLoginButton(context),
-          ],
-        ),
+      // body: Padding(
+      //   padding: const EdgeInsets.all(8.0),
+      //   child: Column(
+      //     mainAxisAlignment: MainAxisAlignment.center,
+      //     crossAxisAlignment: CrossAxisAlignment.center,
+      //     children: [
+      //       Text(AppLocalizations.of(context)!.label_verify_your_email),
+      //       const Gap(20),
+      //       // timerStarted
+      //       //     ? Text(AppLocalizations.of(context)!.countingDownWaitMessage(
+      //       //         SessionConfig.emailResendCounter.toString()))
+      //       //     : resendEmailButton(),
+      //       // go to sign in screen button
+      //       const Gap(40),
+      //       goToLoginButton(context),
+      //     ],
+      //   ),
+      //
+      // ),
+
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [Text('Waiting confirmation email screen')],
       ),
     );
   }

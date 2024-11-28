@@ -1,7 +1,17 @@
+import 'dart:developer';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
+
+import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 import 'firebase_options.dart';
 import 'presentation/screens/login_screen.dart';
@@ -11,6 +21,28 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  // firebase_auth.FirebaseAuth.instance.signOut();
+  if (kDebugMode) {
+    try {
+      log('using Firebase emulator');
+      // TODO -> ATTENTION: remember to uncomment it in case of caller does not have permission to access the database OR Check if app check is activated
+      // await FirebaseFirestore.instance.terminate();
+      // await FirebaseFirestore.instance.clearPersistence();
+      FirebaseFirestore.instance.useFirestoreEmulator('localhost', 8000);
+      firebase_auth.FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
+      FirebaseStorage.instance.useStorageEmulator('localhost', 9199);
+      FirebaseFunctions.instance.useFunctionsEmulator('localhost', 5001);
+    } catch (e) {
+      log(e.toString());
+    }
+  } else {
+    // await FirebaseAppCheck.instance.activate(
+    //   appleProvider: AppleProvider.appAttest,
+    // );
+    log('using Firebase production');
+  }
+
 
   runApp(const MyApp());
 }
