@@ -1,13 +1,12 @@
 import 'dart:developer';
 import 'dart:async';
 
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart'
     hide EmailAuthProvider, PhoneAuthProvider;
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:mimbo/presentation/widget/widgets.dart';
 
@@ -56,7 +55,7 @@ class AuthGate extends StatelessWidget {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => ResetPasswordScreen(email: email)),
+                      builder: (context) => ForgotPasswordScreen(email: email)),
                 );
               }),
               AuthStateChangeAction<UserCreated>((context, state) async {
@@ -249,7 +248,7 @@ class SignedOutScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       // appBar: AppBar(
       //   title: Text(AppLocalizations.of(context)!.signedOutTitle),
       // ),
@@ -278,34 +277,167 @@ class SignedOutScreen extends StatelessWidget {
   }
 }
 
-class ResetPasswordScreen extends StatelessWidget {
+class ForgotPasswordScreen extends StatefulWidget {
   static String routeName = '/forgot_password';
   final String email;
 
-  const ResetPasswordScreen({required this.email, super.key});
+  const ForgotPasswordScreen({required this.email, super.key});
+
+  @override
+  State<ForgotPasswordScreen> createState() => _ForgotPasswordScreenState();
+}
+
+class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
+  final GlobalKey<FormState> emailInputKey = GlobalKey<FormState>();
+
+  TextEditingController emailController = TextEditingController();
+  bool sendingEmail = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: Text(AppLocalizations.of(context)!.passwordResetTitle),
-      // ),
-      // body: Center(
-      //   child: Column(
-      //     mainAxisAlignment: MainAxisAlignment.center,
-      //     children: [
-      //       Text(AppLocalizations.of(context)!.passwordResetMessage),
-      //       TextButton(
-      //         onPressed: () {
-      //           FirebaseAuth.instance.sendPasswordResetEmail(email: email);
-      //         },
-      //         child: Text(AppLocalizations.of(context)!.sendEmailButton),
-      //       ),
-      //     ],
-      //   ),
-      // ),
-      body: Column(
-        children: [Text('Reser password screen')],
+      appBar: AppBar(
+        // title: Text(AppLocalizations.of(context)!.passwordResetTitle),
+        title: const Text('Password reset title'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (context) => const AuthGate()),
+              (route) => false,
+            );
+          },
+        ),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              // AppLocalizations.of(context)!.passwordResetMessage,
+              'Password reset message',
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+            const Gap(20),
+            emailInput(context),
+            const Gap(20),
+            sendingEmail
+                ? const CircularProgressIndicator()
+                : sendResetEmailButton(context),
+          ],
+        ),
+      ),
+    );
+  }
+
+  ElevatedButton sendResetEmailButton(BuildContext context) {
+    return ElevatedButton(
+      onPressed: () async {
+        if (!emailInputKey.currentState!.validate()) {
+          return;
+        }
+
+        setState(() {
+          sendingEmail = true;
+        });
+
+        try {
+          await FirebaseAuth.instance
+              .sendPasswordResetEmail(email: emailController.text.trim());
+
+          if (!context.mounted) {
+            setState(() {
+              sendingEmail = false;
+            });
+            return;
+          }
+
+          Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(
+              builder: (context) => const ConfirmationResetEmailSent(),
+            ),
+            (route) => false,
+          );
+        } on FirebaseAuthException catch (firebaseException) {
+          if (!context.mounted) {
+            setState(() {
+              sendingEmail = false;
+            });
+            return;
+          }
+
+          if (firebaseException.code == 'user-not-found') {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content:
+                    Text(AppLocalizations.of(context)!.snack_m_user_not_found),
+                duration: const Duration(seconds: 3),
+              ),
+            );
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                    AppLocalizations.of(context)!.snack_m_password_reset_error),
+                duration: const Duration(seconds: 3),
+              ),
+            );
+          }
+        } catch (e) {
+          log('Error sending password reset email: $e');
+          if (!context.mounted) {
+            setState(() {
+              sendingEmail = false;
+            });
+            return;
+          }
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                  AppLocalizations.of(context)!.snack_m_password_reset_error),
+              duration: const Duration(seconds: 3),
+            ),
+          );
+        }
+
+        // stop loading
+        setState(() {
+          sendingEmail = false;
+        });
+      },
+      child: Text(AppLocalizations.of(context)!.send_reset_email_button),
+    );
+  }
+
+  Padding emailInput(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Form(
+        key: emailInputKey,
+        child: TextFormField(
+          keyboardType: TextInputType.emailAddress,
+          controller: emailController,
+          decoration: InputDecoration(
+              labelText: AppLocalizations.of(context)!
+                  .input_label_email_reset_confirmation),
+          validator: (emailInput) {
+            if (emailInput == null || emailInput.isEmpty) {
+              return AppLocalizations.of(context)!
+                  .input_error_empty_email_reset_confirmation;
+            } else if (emailInput.isEmpty) {
+              return AppLocalizations.of(context)!
+                  .input_error_empty_email_reset_confirmation;
+            } else if (!EmailValidator.validate(emailInput.trim())) {
+              return AppLocalizations.of(context)!
+                  .input_error_email_reset_confirmation;
+            } else {
+              return null;
+            }
+          },
+        ),
       ),
     );
   }
@@ -342,23 +474,48 @@ class _UserCreatedScreenState extends State<UserCreatedScreen> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         // title: Text(AppLocalizations.of(context)!.confirmationEmailTitle),
-        title: Text('Confirmation email title'),
-        // actions: const [
-        //   SignOutFromGnomeeButton(),
-        // ],
+        title: const Text('Confirmation email title'),
+        actions: const [
+          SignOutAppBarAction(),
+        ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(10.0),
+      body:  Padding(
+        padding: EdgeInsets.all(10.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             // Text(AppLocalizations.of(context)!.verifyYourInboxMessage),
-            Text('Verify your inbox message'),
+            const Text('Verify your inbox message'),
+            const Gap(20),
+            Text(AppLocalizations.of(context)!.label_user_created_message),
             const Gap(35),
             const GoToLoginScreenButton(),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class ConfirmationResetEmailSent extends StatelessWidget {
+  const ConfirmationResetEmailSent({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(
+            AppLocalizations.of(context)!
+                .label_confirmation_reset_password_email_sent,
+            textAlign: TextAlign.center,
+          ),
+          const Gap(20),
+          const GoToLoginScreenButton(),
+        ],
       ),
     );
   }
@@ -449,7 +606,7 @@ class _WaitingConfirmationEmailState extends State<WaitingConfirmationEmail> {
       //
       // ),
 
-      body: Column(
+      body: const Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [Text('Waiting confirmation email screen')],
       ),
