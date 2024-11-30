@@ -1,7 +1,6 @@
 import 'dart:developer';
 import 'dart:async';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:firebase_auth/firebase_auth.dart'
@@ -9,12 +8,9 @@ import 'package:firebase_auth/firebase_auth.dart'
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:mimbo/data/models/users.dart';
-import 'package:mimbo/data/repositories/firebase_manager.dart';
-import 'package:mimbo/presentation/screens/home_screen.dart';
-import 'package:mimbo/presentation/widget/widgets.dart';
 
 import '../../data/repositories/user_manager.dart';
+import '../widget/widgets.dart';
 
 class AuthGate extends StatelessWidget {
   /// The [AuthGate] is a screen that allows the user to sign in or sign up.
