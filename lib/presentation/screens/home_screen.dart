@@ -1,6 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import 'login_screen.dart';
+
 class HomeScreen extends StatelessWidget {
+// TODO place holder for home screen
   const HomeScreen({super.key});
 
   @override
@@ -10,11 +14,19 @@ class HomeScreen extends StatelessWidget {
         title: const Text('Home Screen'),
       ),
       body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            Navigator.of(context).pushNamed('/login');
-          },
-          child: const Text('Go to Login Screen'),
+        child: Column(
+          children: [
+            const Text('Welcome to the Home Screen'),
+            ElevatedButton(
+              onPressed: () async {
+                await FirebaseAuth.instance.signOut();
+                Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (context) => const AuthGate()),
+                      (route) => false,
+                );              },
+              child: const Text('Go to Login Screen'),
+            ),
+          ],
         ),
       ),
     );

@@ -62,5 +62,9 @@
   "button_resend_email": "Resend e-mail",
   "@button_resend_email": {
     "description": "Button that resends the confirmation e-mail in the WaitingConfirmationEmail."
-  }
+  },
+  "label_generic_error": "An error occurred. Please try again later.",
+    "@label_generic_error": {
+        "description": "Message that appears when an error occurs in the application."
+    }
 }

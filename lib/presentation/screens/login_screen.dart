@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:firebase_auth/firebase_auth.dart'
@@ -8,7 +9,12 @@ import 'package:firebase_auth/firebase_auth.dart'
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:mimbo/data/models/users.dart';
+import 'package:mimbo/data/repositories/firebase_manager.dart';
+import 'package:mimbo/presentation/screens/home_screen.dart';
 import 'package:mimbo/presentation/widget/widgets.dart';
+
+import '../../data/repositories/user_manager.dart';
 
 class AuthGate extends StatelessWidget {
   /// The [AuthGate] is a screen that allows the user to sign in or sign up.
@@ -34,9 +40,9 @@ class AuthGate extends StatelessWidget {
             return const WaitingConfirmationEmail();
           }
         } else if (snapshot.hasError) {
-          return const Scaffold(
+          return Scaffold(
             body: Center(
-              child: Text('An error occurred'),
+              child: Text(AppLocalizations.of(context)!.label_generic_error),
             ),
           );
         } else {
@@ -98,56 +104,13 @@ class AuthGate extends StatelessWidget {
       },
     );
   }
-
-  Future<void> handleUserSignedIn(BuildContext context) async {
-    // check if has confirmed email
-    if (!FirebaseAuth.instance.currentUser!.emailVerified) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-            builder: (context) => const WaitingConfirmationEmail()),
-      );
-    }
-    try {
-      // FirestoreManager firestoreManager = FirestoreManager.noUserId(
-      //   firestore: FirebaseFirestore.instance,
-      // );
-      //
-      // try {
-      //   String uid = FirebaseAuth.instance.currentUser!.uid;
-      //   GnomeeUser? gnomeUser = await firestoreManager.getUserByID(uid);
-      //
-      //   if (!context.mounted) {
-      //     log('=====> Context was not mounted');
-      //     FirebaseAuth.instance.signOut();
-      //     return;
-      //   }
-      //
-      //   if (gnomeUser == null) {
-      //     // user has already logged in, but has not created an account
-      //     Navigator.pushReplacement(
-      //       context,
-      //       MaterialPageRoute(builder: (context) => CreateUserScreen(uuid: uid)),
-      //     );
-      //   } else {
-      //     BlocProvider.of<UserCubit>(context).setUser(gnomeUser);
-      //     BlocProvider.of<AnalyticsCubit>(context)
-      //         .analyticsManager
-      //         .setUserProperties(gnomeUser);
-      //     log('User signed in: ${gnomeUser.id}');
-      //     Navigator.pushReplacement(
-      //       context,
-      //       MaterialPageRoute(builder: (context) => const SearchPage()),
-      //     );
-      //   }
-    } catch (e) {
-      // display error message and return to sign in
-      FirebaseAuth.instance.signOut();
-    }
-  }
 }
 
 class UserLoadingScreen extends StatefulWidget {
+  /// The [UserLoadingScreen] is displayed when the user is signed in and
+  /// the email is verified. It loads the user data and redirects the user to
+  /// the home screen.
+
   const UserLoadingScreen({super.key});
 
   @override
@@ -158,37 +121,32 @@ class _UserLoadingScreenState extends State<UserLoadingScreen> {
   @override
   void initState() {
     super.initState();
-    loadDataAndRedirect(context);
+    assert(FirebaseAuth.instance.currentUser != null);
+    assert(FirebaseAuth.instance.currentUser!.emailVerified);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      loadDataAndRedirect(context);
+    });
   }
 
+  String message = '';
+
   Future<void> loadDataAndRedirect(BuildContext context) async {
-    // FirestoreManager firestoreManager = FirestoreManager.noUserId(
-    //   firestore: FirebaseFirestore.instance,
-    // );
-    //
-    // UserManager userManager = UserManager(
-    //     firestoreManager: firestoreManager,
-    //     uuid: FirebaseAuth.instance.currentUser!.uid);
-    //
-    // await userManager.loadUser(context).then((gnomeeUser) {
-    //   if (!context.mounted) return;
-    //
-    //   if (gnomeeUser == null) {
-    //     String uuid = FirebaseAuth.instance.currentUser!.uid;
-    //     Navigator.pushReplacement(
-    //       context,
-    //       MaterialPageRoute(
-    //           builder: (context) => CreateUserScreen(
-    //                 uuid: uuid,
-    //               )),
-    //     );
-    //   } else {
-    //     Navigator.pushReplacement(
-    //       context,
-    //       MaterialPageRoute(builder: (context) => const SearchPage()),
-    //     );
-    //   }
-    // });
+    /// The [loadDataAndRedirect] method loads the user data and redirects the
+    /// app to the home screen. If the user data is not found, it displays an
+    /// error message.
+    UserManager userManager = UserManager();
+    await userManager.loadUser(context, updateMessage);
+
+
+  }
+
+  Future<void> updateMessage(String message) async {
+    /// Updates the message displayed on the screen.
+    setState(() {
+      this.message = message;
+    });
+    await Future.delayed(const Duration(seconds: 2));
   }
 
   @override
@@ -200,7 +158,7 @@ class _UserLoadingScreenState extends State<UserLoadingScreen> {
       body: Center(
         child: Column(
           children: [
-            Text(AppLocalizations.of(context)!.label_loading_user_message),
+            Text(message),
             const CircularProgressIndicator(),
           ],
         ),
@@ -479,8 +437,8 @@ class _UserCreatedScreenState extends State<UserCreatedScreen> {
           SignOutAppBarAction(),
         ],
       ),
-      body:  Padding(
-        padding: EdgeInsets.all(10.0),
+      body: Padding(
+        padding: const EdgeInsets.all(10.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,

@@ -27,7 +27,7 @@ void main() async {
       // TODO -> ATTENTION: remember to uncomment it in case of caller does not have permission to access the database OR Check if app check is activated
       // await FirebaseFirestore.instance.terminate();
       // await FirebaseFirestore.instance.clearPersistence();
-      FirebaseFirestore.instance.useFirestoreEmulator('localhost', 8000);
+      FirebaseFirestore.instance.useFirestoreEmulator('localhost', 8080);
       firebase_auth.FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
       FirebaseStorage.instance.useStorageEmulator('localhost', 9199);
       FirebaseFunctions.instance.useFunctionsEmulator('localhost', 5001);
