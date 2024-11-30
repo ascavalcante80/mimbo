@@ -1,6 +1,6 @@
 {
-  "app_bar_title_loading_user_s": "Loading user",
-  "@app_bar_title_loading_user_s": {
+  "app_bar_title_loading_user": "Loading user",
+  "@app_bar_title_loading_user": {
     "description": "App bar Title of screen UserLoadingScreen."
   },
   "label_loading_user_message": "Loading user...",
@@ -19,12 +19,12 @@
   "@send_reset_email_button": {
     "description": "Button that sends the reset e-mail in the ResetPasswordScreen."
   },
-  "input_label_email_reset_confirmation": "Enter your e-mail address",
-  "@input_label_email_reset_confirmation": {
+  "input_label_enter_email": "Enter your e-mail address",
+  "@input_label_enter_email": {
     "description": "Hint text that appears asking the user to enter the e-mail to send reset instructions Reset Password."
   },
-  "input_error_email_reset_confirmation": "Please enter a valid e-mail address",
-  "@input_error_email_reset_confirmation": {
+  "input_error_invalid_email": "Please enter a valid e-mail address",
+  "@input_error_invalid_email": {
     "description": "Error message that appears when the user enters an invalid e-mail in the ResetPasswordScreen."
   },
   "label_user_created_message": "Thanks for signing up with Gnomee! 🎉\n\nWe sent you an email to confirm your account. Please, check your inbox and click the link to activate your account.",
@@ -35,24 +35,24 @@
     "@label_verify_email": {
         "description": "Message that appears as title when the user is created in the CreateUserScreen."
     },
-  "input_error_empty_email_reset_confirmation": "The e-mail address field cannot be empty",
-  "@input_error_empty_email_reset_confirmation": {
+  "input_error_empty_email": "The e-mail address field cannot be empty",
+  "@input_error_empty_email": {
     "description": "Error message that appears when the user does not enter an e-mail in the ResetPasswordScreen."
   },
-  "label_confirmation_reset_password_email_sent": "A email with instructions to reset your password has been sent to your e-mail address.",
-  "@label_confirmation_reset_password_email_sent": {
+  "label_confirmation_email_sent": "A email with instructions to reset your password has been sent to your e-mail address.",
+  "@label_confirmation_email_sent": {
     "description": "Message that appears when the e-mail with instructions to reset password has been successfully sent in the ResetPasswordScreen."
   },
-  "app_bar_title_waiting_confirmation_email_s": "E-mail confirmation",
-  "@app_bar_title_waiting_confirmation_email_s": {
+  "app_bar_title_waiting_confirmation": "Waiting e-mail confirmation",
+  "@app_bar_title_waiting_confirmation": {
     "description": "App bar Title of screen WaitingConfirmationEmail."
   },
   "label_verify_your_email": "Verify your e-mail",
   "@label_verify_your_email": {
     "description": "Message that appears when the confirmation e-mail has been sent in the WaitingConfirmationEmail."
   },
-  "label_error_message_email_not_confirmed": "Your e-mail has not been confirmed yet. Please check your inbox and confirm your e-mail.",
-  "@label_error_message_email_not_confirmed": {
+  "label_error_email_not_confirmed": "Your e-mail has not been confirmed yet. Please check your inbox and confirm your e-mail.",
+  "@label_error_email_not_confirmed": {
     "description": "Message that appears when the user tries to access a page that requires a confirmed e-mail in the screen WaitingConfirmationEmail.."
   },
   "button_go_to_login": "Go to login",

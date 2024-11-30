@@ -153,7 +153,7 @@ class _UserLoadingScreenState extends State<UserLoadingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.app_bar_title_loading_user_s),
+        title: Text(AppLocalizations.of(context)!.app_bar_title_loading_user),
       ),
       body: Center(
         child: Column(
@@ -380,17 +380,17 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           controller: emailController,
           decoration: InputDecoration(
               labelText: AppLocalizations.of(context)!
-                  .input_label_email_reset_confirmation),
+                  .input_label_enter_email),
           validator: (emailInput) {
             if (emailInput == null || emailInput.isEmpty) {
               return AppLocalizations.of(context)!
-                  .input_error_empty_email_reset_confirmation;
+                  .input_error_empty_email;
             } else if (emailInput.isEmpty) {
               return AppLocalizations.of(context)!
-                  .input_error_empty_email_reset_confirmation;
+                  .input_error_empty_email;
             } else if (!EmailValidator.validate(emailInput.trim())) {
               return AppLocalizations.of(context)!
-                  .input_error_email_reset_confirmation;
+                  .input_error_invalid_email;
             } else {
               return null;
             }
@@ -468,7 +468,7 @@ class ConfirmationResetEmailSent extends StatelessWidget {
         children: [
           Text(
             AppLocalizations.of(context)!
-                .label_confirmation_reset_password_email_sent,
+                .label_confirmation_email_sent,
             textAlign: TextAlign.center,
           ),
           const Gap(20),
@@ -534,7 +534,7 @@ class _WaitingConfirmationEmailState extends State<WaitingConfirmationEmail> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: Text(AppLocalizations.of(context)!
-            .app_bar_title_waiting_confirmation_email_s),
+            .app_bar_title_waiting_confirmation),
         actions: [
           IconButton(
               onPressed: () {
@@ -602,7 +602,7 @@ class _WaitingConfirmationEmailState extends State<WaitingConfirmationEmail> {
             } else {
               setState(() {
                 errorMessage = AppLocalizations.of(context)!
-                    .label_error_message_email_not_confirmed;
+                    .label_error_email_not_confirmed;
               });
             }
             return;
