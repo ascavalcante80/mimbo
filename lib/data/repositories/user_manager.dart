@@ -38,7 +38,9 @@ class UserManager {
     }
 
     if (mimUser == null) {
-      await operationUpdate("Please create a user account.");
+      if (context.mounted) {
+        await operationUpdate("Please create a user account.");
+      }
       if (context.mounted) {
         Navigator.pushReplacement(
           context,
