@@ -1,9 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:equatable/equatable.dart';
 
 import '../constants.dart';
 
-class MimUser {
-  String id;
+class MimUser extends Equatable {
+  final String id;
   String username;
   String name;
   DateTime createdAt;
@@ -40,6 +41,8 @@ class MimUser {
         return UserGender.notBinary;
       case 'other':
         return UserGender.other;
+      case 'notBinary':
+        return UserGender.notBinary;
     }
   }
 
@@ -64,4 +67,10 @@ class MimUser {
       'gender': gender.name,
     };
   }
+
+  // Attention: createdAt is not included in the props list! This field is not
+  // is created using FieldValue serverTimestamp. So, it is not possible to
+  // compare it during tests.
+  @override
+  List<Object?> get props => [id, username, name, birthdate, gender];
 }
