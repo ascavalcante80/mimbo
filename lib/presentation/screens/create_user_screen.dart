@@ -96,9 +96,13 @@ class _CreateMimUserScreenState extends State<CreateMimUserScreen> {
           }
 
           if (errorMessage != null) {
+
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
               content: Text(errorMessage),
             ));
+            setState(() {
+              savingInProgress = false;
+            });
           } else {
             Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
           }
