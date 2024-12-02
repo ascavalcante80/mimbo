@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'dart:developer';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -149,32 +151,67 @@ class GenderSelectorDropAndDown extends StatefulWidget {
 class _GenderSelectorDropAndDownState extends State<GenderSelectorDropAndDown> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        // color is set according the theme
-        color: Theme.of(context).brightness == Brightness.light
-            ? Colors.white
-            : Colors.grey.shade800,
-      ),
-      child: DropdownButton<UserGender>(
-        value: widget.selectedValue,
-        icon: const Icon(Icons.arrow_downward),
-        onChanged: (UserGender? value) {
-          // This is called when the user selects an item.
-          setState(() {
-            widget.selectedValue = value!;
-          });
-        },
-        dropdownColor: Colors.white,
-        // Set the background color of the dropdown menu
-        items: UserGender.values
-            .map<DropdownMenuItem<UserGender>>((UserGender value) {
-          return DropdownMenuItem<UserGender>(
-            value: value,
-            child: Text(genderParser(value, context)),
-          );
-        }).toList(),
-      ),
+    return Row(
+      children: [
+        const Text('Select your Gender'),
+        Gap(10),
+        Container(
+          decoration: BoxDecoration(
+            // color is set according the theme
+            color: Theme.of(context).brightness == Brightness.light
+                ? Colors.white
+                : Colors.grey.shade800,
+          ),
+          child: DropdownButton<UserGender>(
+            value: widget.selectedValue,
+            icon: const Icon(Icons.arrow_downward),
+            onChanged: (UserGender? value) {
+              // This is called when the user selects an item.
+              setState(() {
+                widget.selectedValue = value!;
+              });
+            },
+            dropdownColor: Colors.white,
+            // Set the background color of the dropdown menu
+            items: UserGender.values
+                .map<DropdownMenuItem<UserGender>>((UserGender value) {
+              return DropdownMenuItem<UserGender>(
+                value: value,
+                child: Text(genderParser(value, context)),
+              );
+            }).toList(),
+          ),
+        ),
+        Gap(10),
+        IconButton(
+            onPressed: () {
+              // Display a modal with information why gender is required
+              showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                        actions: [
+                          TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: const Text('Close'))
+                        ],
+                        title: Text('Why do ask for your gender'),
+                        content: SizedBox(
+                          height: 200,
+                          width: 300,
+                          child: const Column(
+                            children: [
+                              Text('genderRequiredInfo'),
+                              Gap(10),
+                              Text('genderRequiredInfo2'),
+                            ],
+                          ),
+                        ),
+                      ));
+            },
+            icon: const Icon(Icons.info)),
+      ],
     );
   }
 
@@ -194,7 +231,7 @@ class _GenderSelectorDropAndDownState extends State<GenderSelectorDropAndDown> {
       // return AppLocalizations.of(context)!.genderNonDisclosed;
       case UserGender.other:
         return 'genderMale';
-        // TODO: Handle this case.
+      // TODO: Handle this case.
     }
   }
 }
