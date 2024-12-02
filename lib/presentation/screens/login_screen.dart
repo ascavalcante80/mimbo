@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:firebase_auth/firebase_auth.dart'
@@ -9,6 +10,7 @@ import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
+import '../../data/repositories/firebase_manager.dart';
 import '../../data/repositories/user_manager.dart';
 import '../widget/widgets.dart';
 
@@ -131,18 +133,25 @@ class _UserLoadingScreenState extends State<UserLoadingScreen> {
     /// The [loadDataAndRedirect] method loads the user data and redirects the
     /// app to the home screen. If the user data is not found, it displays an
     /// error message.
-    UserManager userManager = UserManager();
+
+    FirestoreManager firestoreManager = FirestoreManager(
+      userId: FirebaseAuth.instance.currentUser!.uid,
+      firestore: FirebaseFirestore.instance,
+    );
+
+    UserManager userManager = UserManager(firestoreManager: firestoreManager);
     await userManager.loadUser(context, updateMessage);
-
-
   }
 
   Future<void> updateMessage(String message) async {
     /// Updates the message displayed on the screen.
-    setState(() {
-      this.message = message;
-    });
-    await Future.delayed(const Duration(seconds: 2));
+    log('message to display: $message');
+    if (context.mounted) {
+      setState(() {
+        this.message = message;
+      });
+      await Future.delayed(const Duration(seconds: 2));
+    }
   }
 
   @override
@@ -375,18 +384,14 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           keyboardType: TextInputType.emailAddress,
           controller: emailController,
           decoration: InputDecoration(
-              labelText: AppLocalizations.of(context)!
-                  .input_label_enter_email),
+              labelText: AppLocalizations.of(context)!.input_label_enter_email),
           validator: (emailInput) {
             if (emailInput == null || emailInput.isEmpty) {
-              return AppLocalizations.of(context)!
-                  .input_error_empty_email;
+              return AppLocalizations.of(context)!.input_error_empty_email;
             } else if (emailInput.isEmpty) {
-              return AppLocalizations.of(context)!
-                  .input_error_empty_email;
+              return AppLocalizations.of(context)!.input_error_empty_email;
             } else if (!EmailValidator.validate(emailInput.trim())) {
-              return AppLocalizations.of(context)!
-                  .input_error_invalid_email;
+              return AppLocalizations.of(context)!.input_error_invalid_email;
             } else {
               return null;
             }
@@ -463,8 +468,7 @@ class ConfirmationResetEmailSent extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
-            AppLocalizations.of(context)!
-                .label_confirmation_email_sent,
+            AppLocalizations.of(context)!.label_confirmation_email_sent,
             textAlign: TextAlign.center,
           ),
           const Gap(20),
@@ -529,8 +533,8 @@ class _WaitingConfirmationEmailState extends State<WaitingConfirmationEmail> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Text(AppLocalizations.of(context)!
-            .app_bar_title_waiting_confirmation),
+        title: Text(
+            AppLocalizations.of(context)!.app_bar_title_waiting_confirmation),
         actions: [
           IconButton(
               onPressed: () {
