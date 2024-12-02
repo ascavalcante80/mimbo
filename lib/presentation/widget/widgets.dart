@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_const_constructors
-
 import 'dart:developer';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -155,7 +153,7 @@ class _GenderSelectorDropAndDownState extends State<GenderSelectorDropAndDown> {
     return Row(
       children: [
         const Text('Select your Gender'),
-        Gap(10),
+        const Gap(10),
         Container(
           decoration: BoxDecoration(
             // color is set according the theme
@@ -183,7 +181,7 @@ class _GenderSelectorDropAndDownState extends State<GenderSelectorDropAndDown> {
             }).toList(),
           ),
         ),
-        Gap(10),
+        const Gap(10),
         IconButton(
             onPressed: () {
               // Display a modal with information why gender is required
@@ -197,11 +195,11 @@ class _GenderSelectorDropAndDownState extends State<GenderSelectorDropAndDown> {
                               },
                               child: const Text('Close'))
                         ],
-                        title: Text('Why do ask for your gender'),
-                        content: SizedBox(
+                        title: const Text('Why do ask for your gender'),
+                        content: const SizedBox(
                           height: 200,
                           width: 300,
-                          child: const Column(
+                          child: Column(
                             children: [
                               Text('genderRequiredInfo'),
                               Gap(10),
