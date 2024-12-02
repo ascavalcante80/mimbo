@@ -47,6 +47,7 @@ dependencies:
   firebase_storage: ^12.3.6
   cloud_functions: ^5.1.5
   email_validator: ^2.1.17
+  emoji_regex: ^0.0.5
 
 dev_dependencies:
   flutter_test:
