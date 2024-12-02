@@ -2,7 +2,10 @@ import 'dart:developer';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 
+import '../../data/constants.dart';
+import '../../utils/date_tools.dart';
 import '../screens/login_screen.dart';
 
 class GoToLoginScreenButton extends StatelessWidget {
@@ -55,5 +58,143 @@ class SignOutAppBarAction extends StatelessWidget {
       },
       icon: const Icon(Icons.logout),
     );
+  }
+}
+
+// ignore: must_be_immutable
+class BirthdatePicker extends StatefulWidget {
+  DateTime? selectedDate;
+
+  BirthdatePicker({super.key});
+
+  @override
+  BirthdatePickerState createState() => BirthdatePickerState();
+}
+
+class BirthdatePickerState extends State<BirthdatePicker> {
+  // Function to show the date picker
+  Future<void> _selectDate(BuildContext context) async {
+    // select 18 years before today
+    final DateTime date18yearsAgo = DateTools().getYearsAgo(18);
+    final DateTime firstDate = DateTools().getYearsAgo(130);
+
+    final DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: date18yearsAgo,
+      firstDate: firstDate,
+      lastDate: date18yearsAgo,
+    );
+
+    if (pickedDate != null && pickedDate != widget.selectedDate) {
+      setState(() {
+        widget.selectedDate = pickedDate;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.baseline,
+      textBaseline: TextBaseline.alphabetic,
+      children: <Widget>[
+        Text(
+          // AppLocalizations.of(context)!.createUserScreenBirthDateLabel,
+          'birthDateLabel',
+
+          style: Theme.of(context).textTheme.bodyMedium,
+        ),
+        const Gap(10),
+        GestureDetector(
+          onTap: () => _selectDate(context),
+          child: Container(
+            padding:
+                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey), // TODO use theme data
+              borderRadius: BorderRadius.circular(4.0),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Text(
+                  widget.selectedDate == null
+                      // ? AppLocalizations.of(context)!.datePickerLabel // 'Select a date'
+                      ? 'Select a date'
+                      : '${widget.selectedDate!.toLocal()}'.split(' ')[0],
+                  // Format date as YYYY-MM-DD
+                  style: const TextStyle(fontSize: 16.0),
+                ),
+                const Icon(Icons.calendar_today),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class GenderSelectorDropAndDown extends StatefulWidget {
+  GenderSelectorDropAndDown({super.key});
+
+  UserGender selectedValue = UserGender.male;
+
+  @override
+  State<GenderSelectorDropAndDown> createState() =>
+      _GenderSelectorDropAndDownState();
+}
+
+class _GenderSelectorDropAndDownState extends State<GenderSelectorDropAndDown> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        // color is set according the theme
+        color: Theme.of(context).brightness == Brightness.light
+            ? Colors.white
+            : Colors.grey.shade800,
+      ),
+      child: DropdownButton<UserGender>(
+        value: widget.selectedValue,
+        icon: const Icon(Icons.arrow_downward),
+        onChanged: (UserGender? value) {
+          // This is called when the user selects an item.
+          setState(() {
+            widget.selectedValue = value!;
+          });
+        },
+        dropdownColor: Colors.white,
+        // Set the background color of the dropdown menu
+        items: UserGender.values
+            .map<DropdownMenuItem<UserGender>>((UserGender value) {
+          return DropdownMenuItem<UserGender>(
+            value: value,
+            child: Text(genderParser(value, context)),
+          );
+        }).toList(),
+      ),
+    );
+  }
+
+  String genderParser(UserGender userGender, BuildContext context) {
+    switch (userGender) {
+      case UserGender.male:
+        return 'genderMale';
+      // return AppLocalizations.of(context)!.genderMale;
+      case UserGender.female:
+        return 'genderMale';
+      // return AppLocalizations.of(context)!.genderFemale;
+      case UserGender.notBinary:
+        return 'genderMale';
+      // return AppLocalizations.of(context)!.genderNotBinary;
+      case UserGender.notDisclosed:
+        return 'genderMale';
+      // return AppLocalizations.of(context)!.genderNonDisclosed;
+      case UserGender.other:
+        return 'genderMale';
+        // TODO: Handle this case.
+    }
   }
 }
