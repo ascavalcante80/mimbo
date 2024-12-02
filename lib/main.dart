@@ -12,6 +12,7 @@ import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:firebase_storage/firebase_storage.dart';
 
 import 'firebase_options.dart';
+import 'presentation/screens/home_screen.dart';
 import 'presentation/screens/login_screen.dart';
 
 void main() async {
@@ -65,6 +66,7 @@ class MyApp extends StatelessWidget {
       initialRoute: AuthGate.routeName,
       routes: {
         AuthGate.routeName: (context) => const AuthGate(),
+        HomeScreen.routeName: (context) => const HomeScreen(),
       },
 
       theme: ThemeData(
