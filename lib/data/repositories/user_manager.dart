@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -29,6 +31,7 @@ class UserManager {
     try {
       mimUser = await firestoreManager.getUserByID(userId);
     } catch (e) {
+      log('Error loading user: $e');
       await operationUpdate(
           "Error loading user. Please restart the app. If the problem persists, contact support.");
       return;

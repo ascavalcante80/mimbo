@@ -23,8 +23,8 @@ class MimUser {
     return MimUser(
       id: json['id'],
       username: json['username'],
-      createdAt: json['created_at'],
-      birthdate: json['birthdate'],
+      createdAt: json['created_at'].toDate(),
+      birthdate: json['birthdate'].toDate(),
       name: json['name'],
       gender: stringToGender(json['gender']),
     );
@@ -47,8 +47,8 @@ class MimUser {
     return MimUser(
       id: documentSnapshot.id,
       username: documentSnapshot['username'],
-      createdAt: documentSnapshot['created_at'],
-      birthdate: documentSnapshot['birthdate'],
+      createdAt: documentSnapshot['created_at'].toDate(),
+      birthdate: documentSnapshot['birthdate'].toDate(),
       name: documentSnapshot['name'],
       gender: stringToGender(documentSnapshot['gender']),
     );
@@ -59,7 +59,7 @@ class MimUser {
       'id': id,
       'username': username,
       'created_at': createdAt,
-      'birthDate': birthdate,
+      'birthdate': birthdate,
       'name': name,
       'gender': gender.name,
     };
