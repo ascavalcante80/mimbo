@@ -1,13 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:mimbo/data/constants.dart';
-import 'package:mimbo/data/repositories/user_manager.dart';
-import 'package:mimbo/presentation/screens/home_screen.dart';
+import 'package:gap/gap.dart';
 
 import '../../data/repositories/firebase_manager.dart';
+import '../../data/repositories/user_manager.dart';
 import '../../utils/field_validator.dart';
 import '../widget/widgets.dart';
+import 'home_screen.dart';
 
 class CreateMimUserScreen extends StatefulWidget {
   static const String routeName = '/create_user';
@@ -35,18 +35,35 @@ class _CreateMimUserScreenState extends State<CreateMimUserScreen> {
         ),
         body: Form(
           key: formKey,
-          child: Column(
-            children: [
-              const Text('Welcome to the Create User Screen'),
-              usernameInputField(context),
-              nameInputField(context),
-              birthdatePicker,
-              genderSelector,
-              savingInProgress
-                  ? const CircularProgressIndicator()
-                  : createUserButton(context),
-              if (contextError != null) Text(contextError!),
-            ],
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Column(
+              children: [
+                const Gap(20),
+                const Text('Welcome to the Create User Screen'),
+                const Gap(40),
+                usernameInputField(context),
+                const Gap(10),
+                nameInputField(context),
+                const Gap(10),
+                Text('You must to be at least 18 years old to use this app',
+                    textAlign: TextAlign.start),
+                birthdatePicker,
+                const Gap(10),
+                genderSelector,
+                const Gap(20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    const GoToLoginScreenButton(),
+                    savingInProgress
+                        ? const CircularProgressIndicator()
+                        : createUserButton(context),
+                  ],
+                ),
+                if (contextError != null) Text(contextError!),
+              ],
+            ),
           ),
         ));
   }
@@ -96,7 +113,6 @@ class _CreateMimUserScreenState extends State<CreateMimUserScreen> {
           }
 
           if (errorMessage != null) {
-
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
               content: Text(errorMessage),
             ));
