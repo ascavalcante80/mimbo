@@ -133,13 +133,16 @@ class _UserLoadingScreenState extends State<UserLoadingScreen> {
     /// The [loadDataAndRedirect] method loads the user data and redirects the
     /// app to the home screen. If the user data is not found, it displays an
     /// error message.
-
+    String userId = FirebaseAuth.instance.currentUser!.uid;
     FirestoreManager firestoreManager = FirestoreManager(
-      userId: FirebaseAuth.instance.currentUser!.uid,
+      userId: userId,
       firestore: FirebaseFirestore.instance,
     );
 
-    UserManager userManager = UserManager(firestoreManager: firestoreManager);
+    UserManager userManager = UserManager(
+      userId: userId,
+      firestoreManager: firestoreManager,
+    );
     await userManager.loadUser(context, updateMessage);
   }
 
