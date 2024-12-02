@@ -121,15 +121,15 @@ class _UserLoadingScreenState extends State<UserLoadingScreen> {
     super.initState();
     assert(FirebaseAuth.instance.currentUser != null);
     assert(FirebaseAuth.instance.currentUser!.emailVerified);
+    loadDataAndRedirect();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      loadDataAndRedirect(context);
-    });
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    // });
   }
 
   String message = '';
 
-  Future<void> loadDataAndRedirect(BuildContext context) async {
+  Future<void> loadDataAndRedirect() async {
     /// The [loadDataAndRedirect] method loads the user data and redirects the
     /// app to the home screen. If the user data is not found, it displays an
     /// error message.
