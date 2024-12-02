@@ -53,6 +53,7 @@ class FirestoreManager {
         throw IDAlreadyExistsException();
       }
     });
+    // checks if the username already exists
     await users.where('username', isEqualTo: user.username).get().then((value) {
       if (value.docs.isNotEmpty) {
         throw UsernameAlreadyExistsException();
