@@ -5,6 +5,7 @@ import 'login_screen.dart';
 
 class HomeScreen extends StatelessWidget {
 // TODO place holder for home screen
+  static const String routeName = '/home_screen';
   const HomeScreen({super.key});
 
   @override
@@ -20,10 +21,12 @@ class HomeScreen extends StatelessWidget {
             ElevatedButton(
               onPressed: () async {
                 await FirebaseAuth.instance.signOut();
+                if (!context.mounted) return;
                 Navigator.of(context).pushAndRemoveUntil(
                   MaterialPageRoute(builder: (context) => const AuthGate()),
-                      (route) => false,
-                );              },
+                  (route) => false,
+                );
+              },
               child: const Text('Go to Login Screen'),
             ),
           ],
