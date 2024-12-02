@@ -92,10 +92,11 @@ class _CreateMimUserScreenState extends State<CreateMimUserScreen> {
             });
             return;
           }
-
+          String userId = FirebaseAuth.instance.currentUser!.uid;
           UserManager userManager = UserManager(
+            userId: userId,
               firestoreManager: FirestoreManager(
-            userId: FirebaseAuth.instance.currentUser!.uid,
+            userId: userId,
             firestore: FirebaseFirestore.instance,
           ));
 
