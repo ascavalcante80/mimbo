@@ -5,15 +5,17 @@ import '../constants.dart';
 class MimUser {
   String id;
   String username;
+  String name;
   DateTime createdAt;
-  DateTime birthDate;
+  DateTime birthdate;
   UserGender gender;
 
   MimUser({
     required this.id,
     required this.username,
+    required this.name,
     required this.createdAt,
-    required this.birthDate,
+    required this.birthdate,
     required this.gender,
   });
 
@@ -21,8 +23,9 @@ class MimUser {
     return MimUser(
       id: json['id'],
       username: json['username'],
-      createdAt: json['createdAt'],
-      birthDate: json['birthDate'],
+      createdAt: json['created_at'],
+      birthdate: json['birthdate'],
+      name: json['name'],
       gender: stringToGender(json['gender']),
     );
   }
@@ -34,7 +37,7 @@ class MimUser {
       case 'female':
         return UserGender.female;
       case 'notSpecified':
-        return UserGender.notSpecified;
+        return UserGender.notBinary;
       case 'other':
         return UserGender.other;
     }
@@ -44,8 +47,9 @@ class MimUser {
     return MimUser(
       id: documentSnapshot.id,
       username: documentSnapshot['username'],
-      createdAt: documentSnapshot['createdAt'],
-      birthDate: documentSnapshot['birthDate'],
+      createdAt: documentSnapshot['created_at'],
+      birthdate: documentSnapshot['birthdate'],
+      name: documentSnapshot['name'],
       gender: stringToGender(documentSnapshot['gender']),
     );
   }
@@ -54,8 +58,10 @@ class MimUser {
     return {
       'id': id,
       'username': username,
-      'createdAt': createdAt,
-      'birthDate': birthDate,
+      'created_at': createdAt,
+      'birthDate': birthdate,
+      'name': name,
+      'gender': gender.name,
     };
   }
 }
