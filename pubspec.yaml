@@ -48,6 +48,8 @@ dependencies:
   cloud_functions: ^5.1.5
   email_validator: ^2.1.17
   emoji_regex: ^0.0.5
+  fake_cloud_firestore: ^3.1.0
+  equatable: ^2.0.7
 
 dev_dependencies:
   flutter_test:
