@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 
@@ -44,27 +43,54 @@ class FirestoreManager {
     return mimUser;
   }
 
-  //
-  // Future<void> createUser(GnomeeUser user) async {
-  //   /// The [createUser] method is a method that creates a new [GnomeeUser] in the
-  //   /// Firestore database. It uses the UUID of the user as the document ID.
-  //   ///
-  //
-  //   DocumentReference userDoc = users.doc(user.id);
-  //
-  //   await userDoc.get().then((value) {
-  //     if (value.exists) {
-  //       throw IDAlreadyExistsException();
-  //     }
-  //   });
-  //
-  //   await users.where('username', isEqualTo: user.username).get().then((value) {
-  //     if (value.docs.isNotEmpty) {
-  //       throw UsernameAlreadyExistsException();
-  //     }
-  //   });
-  //   await users.doc(user.id).set(user.toJson());
-  // }
+  Future<void> createUser(MimUser user) async {
+    /// The [createUser] method is a method that creates a new [MimUser] in the
+    /// Firestore database. It uses the UUID of the user as the document ID.
+    ///
+    DocumentReference userDoc = users.doc(user.id);
+    await userDoc.get().then((value) {
+      if (value.exists) {
+        throw IDAlreadyExistsException();
+      }
+    });
+    await users.where('username', isEqualTo: user.username).get().then((value) {
+      if (value.docs.isNotEmpty) {
+        throw UsernameAlreadyExistsException();
+      }
+    });
+    // converts created_at to a server timestamp
+    Map<String, dynamic> userJson = user.toJson();
+    userJson['created_at'] = FieldValue.serverTimestamp();
+    await users.doc(user.id).set(userJson);
+  }
 
+//
+// Future<void> createUser(GnomeeUser user) async {
+//   /// The [createUser] method is a method that creates a new [GnomeeUser] in the
+//   /// Firestore database. It uses the UUID of the user as the document ID.
+//   ///
+//
+//   DocumentReference userDoc = users.doc(user.id);
+//
+//   await userDoc.get().then((value) {
+//     if (value.exists) {
+//       throw IDAlreadyExistsException();
+//     }
+//   });
+//
+//   await users.where('username', isEqualTo: user.username).get().then((value) {
+//     if (value.docs.isNotEmpty) {
+//       throw UsernameAlreadyExistsException();
+//     }
+//   });
+//   await users.doc(user.id).set(user.toJson());
+// }
+}
 
+class IDAlreadyExistsException implements Exception {
+  String errorMessage() => 'A user with this ID already exists';
+}
+
+class UsernameAlreadyExistsException implements Exception {
+  String errorMessage() => 'A user with this username already exists';
 }
