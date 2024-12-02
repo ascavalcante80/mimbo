@@ -138,6 +138,7 @@ class BirthdatePickerState extends State<BirthdatePicker> {
   }
 }
 
+// ignore: must_be_immutable
 class GenderSelectorDropAndDown extends StatefulWidget {
   GenderSelectorDropAndDown({super.key});
 

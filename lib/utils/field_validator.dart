@@ -1,6 +1,5 @@
 import 'package:emoji_regex/emoji_regex.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class InputValidator {
   static String? validateUsernameField(String? username, BuildContext context) {
