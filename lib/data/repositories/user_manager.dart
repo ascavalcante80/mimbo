@@ -12,8 +12,9 @@ import 'firebase_manager.dart';
 
 class UserManager {
   FirestoreManager firestoreManager;
+  String userId;
 
-  UserManager({required this.firestoreManager});
+  UserManager({required this.userId, required this.firestoreManager});
 
   Future<void> loadUser(BuildContext context, Function operationUpdate) async {
     /// Loads the user from the Firestore database. If the user does not exist,
@@ -22,8 +23,6 @@ class UserManager {
     /// it also updates blocs with user data and project data.
 
     await operationUpdate('loading Mimbo user...');
-
-    String userId = FirebaseAuth.instance.currentUser!.uid;
 
     FirestoreManager firestoreManager =
         FirestoreManager(userId: userId, firestore: FirebaseFirestore.instance);
@@ -75,7 +74,7 @@ class UserManager {
   ) async {
     String? error;
     MimUser mimUser = MimUser(
-      id: FirebaseAuth.instance.currentUser!.uid,
+      id: userId,
       name: name,
       username: username,
       birthdate: birthdate,
