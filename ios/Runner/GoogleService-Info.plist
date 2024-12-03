@@ -9,7 +9,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.chezfavelinha.mimbo</string>
+	<string>app.mimbo.mimbo</string>
 	<key>PROJECT_ID</key>
 	<string>mimbo-9f9a1</string>
 	<key>STORAGE_BUCKET</key>
@@ -25,6 +25,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:114069852783:ios:f1746627eabd601d50f39a</string>
+	<string>1:114069852783:ios:3661345ff98b9c5e50f39a</string>
 </dict>
 </plist>

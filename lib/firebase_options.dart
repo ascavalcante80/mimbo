@@ -60,4 +60,5 @@ class DefaultFirebaseOptions {
     storageBucket: 'mimbo-9f9a1.firebasestorage.app',
     iosBundleId: 'app.mimbo.mimbo',
   );
+
 }
