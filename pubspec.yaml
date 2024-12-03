@@ -51,6 +51,7 @@ dependencies:
   fake_cloud_firestore: ^3.1.0
   equatable: ^2.0.7
   firebase_auth_mocks: ^0.14.1
+  font_awesome_flutter: ^10.8.0
 
 dev_dependencies:
   flutter_test:
