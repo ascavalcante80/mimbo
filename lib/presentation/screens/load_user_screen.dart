@@ -59,8 +59,8 @@ class _UserLoadingScreenState extends State<UserLoadingScreen> {
       setState(() {
         this.message = message;
       });
-      await Future.delayed(const Duration(seconds: 2));
     }
+    await Future.delayed(const Duration(seconds: 2));
   }
 
   @override
