@@ -73,21 +73,24 @@ class UserManager {
     UserGender userGender,
   ) async {
     String? error;
-    MimUser mimUser = MimUser(
-      id: userId,
-      name: name,
-      username: username,
-      birthdate: birthdate,
-      gender: userGender,
-      createdAt: DateTime.now(),
-    );
 
     try {
+      MimUser mimUser = MimUser(
+        id: userId,
+        name: name,
+        username: username,
+        birthdate: birthdate,
+        gender: userGender,
+        createdAt: DateTime.now(),
+      );
+
       await firestoreManager.createUser(mimUser);
     } on UsernameAlreadyExistsException {
       error = 'Username already exists';
     } on IDAlreadyExistsException {
       error = 'User ID already exists';
+    } on AssertionError catch (e) {
+      error = e.toString();
     } catch (e) {
       error = e.toString();
     }
