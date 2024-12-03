@@ -31,8 +31,9 @@ class UserManager {
       mimUser = await firestoreManager.getUserByID(userId);
     } catch (e) {
       log('Error loading user: $e');
+      // sets the message to empty to make go to login button visible
       await operationUpdate(
-          "Error loading user. Please restart the app. If the problem persists, contact support.");
+          "");
       return;
     }
 
