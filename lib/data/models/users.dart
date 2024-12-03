@@ -18,7 +18,11 @@ class MimUser extends Equatable {
     required this.createdAt,
     required this.birthdate,
     required this.gender,
-  });
+  }) {
+    assert(id.isNotEmpty);
+    assert(name.isNotEmpty);
+    assert(username.isNotEmpty);
+  }
 
   factory MimUser.fromJson(Map<String, dynamic> json) {
     return MimUser(
