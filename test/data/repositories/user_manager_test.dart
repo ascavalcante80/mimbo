@@ -19,17 +19,7 @@ void main() {
     late FakeFirebaseFirestore fakeFirestore;
     late FirestoreManager firestoreManager;
     late UserManager userManager;
-    DateTime createdAt = DateTime.now();
-    DateTime birthdate = DateTime(2000, 1, 1);
     String userId = 'testUserId';
-    MimUser userModel = MimUser(
-      id: userId,
-      username: 'username',
-      name: 'name',
-      createdAt: createdAt,
-      birthdate: birthdate,
-      gender: UserGender.notBinary,
-    );
 
     setUp(() {
       // Initialize FakeFirestore
@@ -43,6 +33,8 @@ void main() {
     });
 
     test('Create User', () async {
+      DateTime createdAt = DateTime.now();
+
       String newUserId = 'newUserId';
       UserManager userManagerTest = UserManager(
         userId: newUserId,
@@ -60,7 +52,8 @@ void main() {
         name: name,
         createdAt: createdAt,
         birthdate: birthdate,
-        gender: userGender,);
+        gender: userGender,
+      );
 
       await userManagerTest.createUser(name, username, birthdate, userGender);
       FirestoreManager firestoreManagerTest = FirestoreManager(
@@ -69,7 +62,6 @@ void main() {
       );
 
       MimUser? userResponse = await firestoreManagerTest.getUserByID(newUserId);
-
 
       expect(userResponse, userMatcher,
           reason: 'User must be the same as the one created');
@@ -95,6 +87,39 @@ void main() {
       //
       // GnomeeUser? user2 = await userManager.getUserById('');
       // expect(user2, null, reason: 'User must be null');
+    });
+
+    test('Try to create user using same ID', () async {
+      String secondID = 'secondID';
+      UserManager userManagerTest = UserManager(
+        userId: secondID,
+        firestoreManager: firestoreManager,
+      );
+
+      String username = 'new.username';
+      DateTime birthdate = DateTime(2000, 1, 1);
+      UserGender userGender = UserGender.notBinary;
+      String name = 'new name';
+
+      await userManagerTest.createUser(name, username, birthdate, userGender);
+
+      String? errorIDAlreadyInUse = await userManagerTest.createUser(
+          name, username, birthdate, userGender);
+      expect(errorIDAlreadyInUse, isNotNull,
+          reason:
+              'There should be an error when trying to create a user with the same ID');
+
+      // try to create a user with the same username
+      UserManager userManagerTest2 = UserManager(
+        userId: 'thirdID',
+        firestoreManager: firestoreManager,
+      );
+
+      String? errorUsername = await userManagerTest2.createUser(
+          name, username, birthdate, userGender);
+      expect(errorUsername, isNotNull,
+          reason:
+              'There should be an error when trying to create a user with the same username');
     });
 
     // test('Create User - Fields validation', () async {
