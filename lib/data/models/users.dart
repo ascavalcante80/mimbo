@@ -5,11 +5,11 @@ import '../constants.dart';
 
 class MimUser extends Equatable {
   final String id;
-  String username;
-  String name;
-  DateTime createdAt;
-  DateTime birthdate;
-  UserGender gender;
+  final String username;
+  final String name;
+  final DateTime createdAt;
+  final DateTime birthdate;
+  final UserGender gender;
 
   MimUser({
     required this.id,
