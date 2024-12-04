@@ -2,7 +2,9 @@ import 'dart:developer';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
+import 'package:mimbo/bloc/cubits/user_cubit.dart';
 
 import '../../data/constants.dart';
 import '../../utils/date_tools.dart';
@@ -232,5 +234,25 @@ class _GenderSelectorDropAndDownState extends State<GenderSelectorDropAndDown> {
         return 'genderMale';
       // TODO: Handle this case.
     }
+  }
+}
+
+class UsernameDisplay extends StatelessWidget {
+  String previousText;
+  String postText;
+
+  UsernameDisplay([this.previousText = '', this.postText = '']);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<MimUserCubit, MimUserState>(
+      builder: (context, state) {
+        if (state.user == null) {
+          return Text('User not logged in.');
+        } else {
+          return Text('$previousText${state.user!.username}$postText');
+        }
+      },
+    );
   }
 }

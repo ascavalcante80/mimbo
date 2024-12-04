@@ -1,8 +1,12 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
+import 'package:mimbo/bloc/cubits/user_cubit.dart';
+import 'package:mimbo/data/constants.dart';
+import 'package:mimbo/data/models/users.dart';
+import 'package:mimbo/presentation/widget/widgets.dart';
 
 class HomeScreen extends StatefulWidget {
   // TODO place holder for home screen
@@ -74,7 +78,6 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-
     );
   }
 }
@@ -115,8 +118,21 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: const [
+      children: [
         Text('Welcome to the Profile Screen'),
+        UsernameDisplay('hello, ', ' !'),
+        ElevatedButton(
+            onPressed: () {
+              MimUser mimUser = MimUser(
+                  id: 'fa',
+                  username: 'newusername',
+                  name: 'toto',
+                  createdAt: DateTime.now(),
+                  birthdate: DateTime.now(),
+                  gender: UserGender.notBinary);
+              BlocProvider.of<MimUserCubit>(context).updateUser(mimUser);
+            },
+            child: Text('change username')),
         Text('👤'),
       ],
     );

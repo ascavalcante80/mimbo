@@ -2,6 +2,8 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mimbo/bloc/cubits/user_cubit.dart';
 import 'package:mimbo/data/constants.dart';
 import 'package:mimbo/presentation/screens/create_user_screen.dart';
 
@@ -56,6 +58,10 @@ class UserManager {
             "Error loading user. Please restart the app. If the problem persists, contact support.");
         return;
       } else {
+
+        // update the user state
+        BlocProvider.of<MimUserCubit>(context).updateUser(mimUser);
+
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
