@@ -64,7 +64,7 @@ class UserManager {
 
         // load project
         if (mimUser.projectIds.isNotEmpty) {
-          ProjectManager projectManager = ProjectManager();
+          ProjectManager projectManager = ProjectManager(userId: userId, firestoreManager: firestoreManager);
           projectManager.loadProject(mimUser.projectIds[0], context);
         }
 

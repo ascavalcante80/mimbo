@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:mimbo/data/models/projects.dart';
 
 
 import '../models/users.dart';
@@ -8,7 +9,7 @@ class FirestoreManager {
   late final String userId;
 
   late CollectionReference users;
-  late CollectionReference items;
+  late CollectionReference projects;
   late CollectionReference reactions;
   late CollectionReference usernames;
   late CollectionReference userCreatedItems;
@@ -16,7 +17,7 @@ class FirestoreManager {
 
   FirestoreManager({required this.userId, required this.firestore}) {
     users = firestore.collection('users');
-    items = firestore.collection('items');
+    projects = firestore.collection('projects');
     reactions = firestore.collection('reactions');
     usernames = firestore.collection('usernames');
     userCreatedItems = users.doc(userId).collection('created_items');
@@ -24,7 +25,7 @@ class FirestoreManager {
 
   FirestoreManager.noUserId({required this.firestore}) {
     users = firestore.collection('users');
-    items = firestore.collection('items');
+    projects = firestore.collection('items');
     reactions = firestore.collection('reactions');
     usernames = firestore.collection('usernames');
   }
@@ -63,6 +64,20 @@ class FirestoreManager {
     Map<String, dynamic> userJson = user.toJson();
     userJson['created_at'] = FieldValue.serverTimestamp();
     await users.doc(user.id).set(userJson);
+  }
+  
+  Future<Project?> getProjectByID(String id) async {
+    /// The [getProjectByID] method is a method that searches for a [Project] in
+    /// the Firestore database by its ID. It returns the [Project] if it
+    /// exists, otherwise it returns null.
+
+    Project? project;
+    await projects.doc(id).get().then((value) {
+      if (value.exists) {
+        project = Project.fromDocumentSnapshot(value);
+      }
+    });
+    return project;
   }
 
 //
