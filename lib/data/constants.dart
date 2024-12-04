@@ -5,3 +5,12 @@ enum UserGender {
   other,
   notDisclosed,
 }
+
+enum FeedbackOptions {
+  userDoestSpeakLanguage,
+  unappealingUI,
+  unappealingContent,
+  deviceNotSupported,
+  conceptNotUnderstood,
+  other,
+}
