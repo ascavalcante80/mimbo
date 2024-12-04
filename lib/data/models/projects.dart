@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 
 class Project extends Equatable {
   final String id;
+  final String ownerId;
   final String name;
   final String description;
   final String category;
@@ -19,6 +20,7 @@ class Project extends Equatable {
 
   Project({
     required this.id,
+    required this.ownerId,
     required this.name,
     required this.description,
     required this.category,
@@ -44,6 +46,7 @@ class Project extends Equatable {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
+      'owner_id': ownerId,
       'name': name,
       'description': description,
       'category': category,
@@ -61,6 +64,7 @@ class Project extends Equatable {
   factory Project.fromJson(Map<String, dynamic> json) {
     return Project(
       id: json['id'],
+      ownerId: json['owner_id'],
       name: json['name'],
       description: json['description'],
       category: json['category'],
@@ -78,6 +82,7 @@ class Project extends Equatable {
   factory Project.fromDocumentSnapshot(DocumentSnapshot documentSnapshot) {
     return Project(
       id: documentSnapshot.id,
+      ownerId: documentSnapshot['owner_id'],
       name: documentSnapshot['name'],
       description: documentSnapshot['description'],
       category: documentSnapshot['category'],
@@ -96,6 +101,7 @@ class Project extends Equatable {
   // Important: the createdAt field is not included in the props list.
   List<Object?> get props => [
         id,
+        ownerId,
         name,
         description,
         category,
