@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_literals_to_create_immutables
+// ignore_for_file: prefer_const_literals_to_create_immutables, unused_import
 
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -18,7 +18,6 @@ void main() {
   group('FirestoreManager Tests', () {
     late FakeFirebaseFirestore fakeFirestore;
     late FirestoreManager firestoreManager;
-    late UserManager userManager;
     String userId = 'testUserId';
 
     setUp(() {
@@ -26,10 +25,6 @@ void main() {
       fakeFirestore = FakeFirebaseFirestore();
       firestoreManager =
           FirestoreManager(userId: userId, firestore: fakeFirestore);
-      userManager = UserManager(
-        userId: userId,
-        firestoreManager: firestoreManager,
-      );
     });
 
     test('Create User', () async {
