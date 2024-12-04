@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -5,7 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'login_screen.dart';
 
 class HomeScreen extends StatefulWidget {
-// TODO place holder for home screen
+  // TODO place holder for home screen
   static const String routeName = '/home_screen';
 
   const HomeScreen({super.key});
@@ -31,37 +33,50 @@ class _HomeScreenState extends State<HomeScreen> {
       body: pages[currentPageIndex],
       bottomNavigationBar: NavigationBar(
         elevation: 10,
-        shadowColor: Colors.blueGrey,
-        height: 60,
+        height: 45,
         labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
         onDestinationSelected: (int index) {
           setState(() {
             currentPageIndex = index;
           });
         },
-        // indicatorColor: Colors.amber,
+        indicatorColor: Colors.transparent,
         selectedIndex: currentPageIndex,
-        destinations: const <Widget>[
+        destinations: <Widget>[
           NavigationDestination(
-            selectedIcon: Icon(Icons.home, color: Colors.amber),
-            icon: Icon(Icons.home_outlined),
+            selectedIcon: Container(
+                alignment: Alignment.bottomCenter,
+                child: Icon(Icons.home, color: Colors.amber)),
+            icon: Container(
+                alignment: Alignment.bottomCenter,
+                child: Icon(Icons.home_outlined)),
             label: 'Home',
           ),
           NavigationDestination(
-            selectedIcon: Text(
-              '🔥',
-              style: TextStyle(fontSize: 22),
+            selectedIcon: Container(
+              alignment: Alignment.bottomCenter,
+              child: Text(
+                '🔥',
+                style: TextStyle(fontSize: 22),
+              ),
             ),
-            icon: Icon(FontAwesomeIcons.fireFlameCurved),
+            icon: Container(
+                alignment: Alignment.bottomCenter,
+                child: Icon(FontAwesomeIcons.fireFlameCurved)),
             label: 'Feed',
           ),
           NavigationDestination(
-            selectedIcon: Icon(Icons.account_box, color: Colors.amber),
-            icon: Icon(Icons.account_box_outlined),
+            selectedIcon: Container(
+                alignment: Alignment.bottomCenter,
+                child: Icon(Icons.account_box, color: Colors.amber)),
+            icon: Container(
+                alignment: Alignment.bottomCenter,
+                child: Icon(Icons.account_box_outlined)),
             label: 'Profile',
           ),
         ],
       ),
+
     );
   }
 }
