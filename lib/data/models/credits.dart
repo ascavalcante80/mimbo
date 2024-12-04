@@ -59,3 +59,19 @@ class MimCredit extends Equatable {
         earnedByUserId,
       ];
 }
+
+class CreditsWallet {
+  final List<MimCredit> mimCredits;
+
+  const CreditsWallet({
+    required this.mimCredits,
+  });
+
+  int getAvailableCredits() {
+    return mimCredits.where((credit) => credit.consumedAt == null).length;
+  }
+
+  int getConsumedCredits() {
+    return mimCredits.where((credit) => credit.consumedAt != null).length;
+  }
+}
