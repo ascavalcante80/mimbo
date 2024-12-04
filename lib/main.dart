@@ -12,6 +12,7 @@ import 'package:cloud_functions/cloud_functions.dart';
 
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:mimbo/bloc/cubits/project_cubit.dart';
 import 'package:mimbo/bloc/cubits/user_cubit.dart';
 
 import 'firebase_options.dart';
@@ -58,8 +59,15 @@ class MyApp extends StatelessWidget {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
-    return BlocProvider(
-      create: (context) => MimUserCubit(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => MimUserCubit(),
+        ),
+        BlocProvider(
+          create: (context) => ProjectCubit(),
+        ),
+      ],
       child: MaterialApp(
         title: 'Flutter Demo',
         localizationsDelegates: const [

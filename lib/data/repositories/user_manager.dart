@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mimbo/bloc/cubits/user_cubit.dart';
 import 'package:mimbo/data/constants.dart';
+import 'package:mimbo/data/models/projects.dart';
+import 'package:mimbo/data/repositories/project_manager.dart';
 import 'package:mimbo/presentation/screens/create_user_screen.dart';
 
 import '../../presentation/screens/home_screen.dart';
@@ -61,6 +63,10 @@ class UserManager {
         BlocProvider.of<MimUserCubit>(context).updateUser(mimUser);
 
         // load project
+        if (mimUser.projectIds.isNotEmpty) {
+          ProjectManager projectManager = ProjectManager();
+          projectManager.loadProject(mimUser.projectIds[0], context);
+        }
 
         Navigator.pushReplacement(
           context,
