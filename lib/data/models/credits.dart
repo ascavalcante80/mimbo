@@ -9,10 +9,10 @@ class MimCredit extends Equatable {
   final String earnedByUserId;
 
   // filled when the credit is used
-  final DateTime? consumedAt;
-  final String? consumedWithAnswerId;
+  DateTime? consumedAt;
+  String? consumedWithAnswerId;
 
-  const MimCredit({
+  MimCredit({
     required this.id,
     required this.createdAt,
     required this.attributedToTestId,
@@ -62,10 +62,26 @@ class MimCredit extends Equatable {
 
 class CreditsWallet {
   final List<MimCredit> mimCredits;
+  late Map<String, MimCredit> wallet;
 
-  const CreditsWallet({
+  CreditsWallet({
     required this.mimCredits,
-  });
+  }) {
+    wallet = Map.fromIterable(mimCredits, key: (credit) => credit.id);
+  }
+
+  void consumeAvailableCredit(String answerId) {
+    try {
+      final credit = mimCredits.firstWhere(
+        (credit) => credit.consumedAt == null,
+      );
+
+      credit.consumedAt = DateTime.now();
+      credit.consumedWithAnswerId = answerId;
+    } on StateError {
+      throw NoCreditsAvailableException;
+    }
+  }
 
   int getAvailableCredits() {
     return mimCredits.where((credit) => credit.consumedAt == null).length;
@@ -74,4 +90,19 @@ class CreditsWallet {
   int getConsumedCredits() {
     return mimCredits.where((credit) => credit.consumedAt != null).length;
   }
+
+  void addCredit(MimCredit credit) {
+    if (wallet.containsKey(credit.id)) {
+      throw Exception("Credit already exists in the wallet");
+    } else {
+      mimCredits.add(credit);
+      wallet[credit.id] = credit;
+    }
+  }
+}
+
+class NoCreditsAvailableException implements Exception {
+  final String message = "No credits available to consume";
+
+  NoCreditsAvailableException(message);
 }
