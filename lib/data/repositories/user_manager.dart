@@ -33,8 +33,7 @@ class UserManager {
     } catch (e) {
       log('Error loading user: $e');
       // sets the message to empty to make go to login button visible
-      await operationUpdate(
-          "");
+      await operationUpdate("");
       return;
     }
 
@@ -58,9 +57,10 @@ class UserManager {
             "Error loading user. Please restart the app. If the problem persists, contact support.");
         return;
       } else {
-
         // update the user state
         BlocProvider.of<MimUserCubit>(context).updateUser(mimUser);
+
+        // load project
 
         Navigator.pushReplacement(
           context,
@@ -88,6 +88,7 @@ class UserManager {
         birthdate: birthdate,
         gender: userGender,
         createdAt: DateTime.now(),
+        projectIds: const [],
       );
 
       await firestoreManager.createUser(mimUser);

@@ -10,6 +10,7 @@ class MimUser extends Equatable {
   final DateTime createdAt;
   final DateTime birthdate;
   final UserGender gender;
+  final List<String> projectIds;
 
   MimUser({
     required this.id,
@@ -18,6 +19,7 @@ class MimUser extends Equatable {
     required this.createdAt,
     required this.birthdate,
     required this.gender,
+    required this.projectIds,
   }) {
     assert(id.isNotEmpty);
     assert(name.isNotEmpty);
@@ -32,6 +34,7 @@ class MimUser extends Equatable {
       birthdate: json['birthdate'].toDate(),
       name: json['name'],
       gender: stringToGender(json['gender']),
+      projectIds: List<String>.from(json['project_ids']),
     );
   }
 
@@ -58,6 +61,7 @@ class MimUser extends Equatable {
       birthdate: documentSnapshot['birthdate'].toDate(),
       name: documentSnapshot['name'],
       gender: stringToGender(documentSnapshot['gender']),
+      projectIds: List<String>.from(documentSnapshot['project_ids']),
     );
   }
 
@@ -69,6 +73,7 @@ class MimUser extends Equatable {
       'birthdate': birthdate,
       'name': name,
       'gender': gender.name,
+      'project_ids': projectIds,
     };
   }
 
@@ -76,5 +81,6 @@ class MimUser extends Equatable {
   // is created using FieldValue serverTimestamp. So, it is not possible to
   // compare it during tests.
   @override
-  List<Object?> get props => [id, username, name, birthdate, gender];
+  List<Object?> get props =>
+      [id, username, name, birthdate, gender, projectIds];
 }

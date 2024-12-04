@@ -127,6 +127,7 @@ class ProfileScreen extends StatelessWidget {
                   id: 'fa',
                   username: 'newusername',
                   name: 'toto',
+                  projectIds: ['project_id'],
                   createdAt: DateTime.now(),
                   birthdate: DateTime.now(),
                   gender: UserGender.notBinary);

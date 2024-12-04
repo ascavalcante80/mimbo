@@ -29,6 +29,7 @@ void main() {
 
     test('Create User', () async {
       DateTime createdAt = DateTime.now();
+      List<String> projectsIds = [];
 
       String newUserId = 'newUserId';
       UserManager userManagerTest = UserManager(
@@ -48,6 +49,7 @@ void main() {
         createdAt: createdAt,
         birthdate: birthdate,
         gender: userGender,
+        projectIds: projectsIds,
       );
 
       await userManagerTest.createUser(name, username, birthdate, userGender);
