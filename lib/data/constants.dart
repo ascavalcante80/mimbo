@@ -7,10 +7,11 @@ enum UserGender {
 }
 
 enum FeedbackOptions {
-  userDoestSpeakLanguage,
+  userDoestSpeakTestLanguage,
   unappealingUI,
   unappealingContent,
   deviceNotSupported,
   conceptNotUnderstood,
+  appInTooBetaStage,
   other,
 }
