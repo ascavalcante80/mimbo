@@ -179,7 +179,7 @@ class FirestoreManager {
         .collection(feedbackProvided)
         .add({'form_id': id, 'project_id': formFeedback.projectId});
 
-    return id;
+    return id.toString();
   }
 
   Future<FormFeedback?> getFormFeedbackByID(
