@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mimbo/data/models/credits.dart';
+import 'package:mimbo/data/models/feedback_form.dart';
 import 'package:mimbo/data/models/projects.dart';
 
 import '../models/users.dart';
@@ -12,6 +13,7 @@ class FirestoreManager {
   late CollectionReference projects;
   late CollectionReference credits;
   String feedbacksForms = 'feedbacks_forms';
+  String feedbackProvided = 'feedback_provided';
 
   FirestoreManager({required this.userId, required this.firestore}) {
     users = firestore.collection('users');
@@ -156,6 +158,57 @@ class FirestoreManager {
     });
     return credit;
   }
+
+  Future<String?> createFormFeedback(FormFeedback formFeedback) async {
+    /// The [createFormFeedback] method is a method that creates a new
+    /// [FormFeedback] in the project database. It also creates a redundant
+    /// data in the user's feedbacks_forms collection.
+    String? id;
+
+    await projects
+        .doc(formFeedback.projectId)
+        .collection(feedbacksForms)
+        .add(formFeedback.toJson())
+        .then((onValue) {
+      id = onValue.id;
+    });
+
+    // adds redundant data to the user's feedbacks_forms collection
+    await users
+        .doc(userId)
+        .collection(feedbackProvided)
+        .add({'form_id': id, 'project_id': formFeedback.projectId});
+
+    return id;
+  }
+
+  Future<FormFeedback?> getFormFeedbackByID(
+      String projectId, String formId) async {
+
+    FormFeedback? formFeedback;
+    await projects
+        .doc(projectId)
+        .collection(feedbacksForms)
+        .doc(formId)
+        .get()
+        .then((value) {
+      if (value.exists) {
+        formFeedback = FormFeedback.fromDocumentSnapshot(value);
+      }
+    });
+    return formFeedback;
+  }
+
+  Future<List<FormFeedback>> getFormFeedbacksByProjectID(String projectId) async {
+    List<FormFeedback> formFeedbacks = [];
+    await projects.doc(projectId).collection(feedbacksForms).get().then((value) {
+      for (var element in value.docs) {
+        formFeedbacks.add(FormFeedback.fromDocumentSnapshot(element));
+      }
+    });
+    return formFeedbacks;
+  }
+
 }
 
 class IDAlreadyExistsException implements Exception {
