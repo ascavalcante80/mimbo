@@ -81,7 +81,7 @@ class MimCredit extends Equatable {
       ];
 }
 
-class CreditsWallet {
+class CreditsWallet extends Equatable {
   final List<MimCredit> mimCredits;
   late Map<String, MimCredit> _wallet;
 
@@ -116,7 +116,7 @@ class CreditsWallet {
     return mimCredits.where((credit) => credit.consumedAt != null).length;
   }
 
-  void addCredit(MimCredit credit) {
+  Future<void> addCredit(MimCredit credit) async {
     if (credit.consumedAt != null || credit.consumedWithAnswerId != null) {
       throw ErrorTryingAddConsumedCredit();
     }
@@ -128,6 +128,9 @@ class CreditsWallet {
       _wallet[credit.id] = credit;
     }
   }
+
+  @override
+  List<Object?> get props => [mimCredits, _wallet];
 }
 
 class ErrorTryingAddConsumedCredit implements Exception {

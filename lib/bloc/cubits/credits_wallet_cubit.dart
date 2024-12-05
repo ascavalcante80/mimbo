@@ -12,8 +12,8 @@ class CreditsWalletCubit extends Cubit<CreditsWalletState> {
           ),
         );
 
-  void consumeCredit(String answerId) {
-    state.creditsWallet.consumeAvailableCredit(answerId);
+  void consumeCredit(String answerId) async {
+    await state.creditsWallet.consumeAvailableCredit(answerId);
     emit(
       CreditsWalletState(
         creditsWallet: state.creditsWallet,
@@ -21,8 +21,8 @@ class CreditsWalletCubit extends Cubit<CreditsWalletState> {
     );
   }
 
-  void addCredit(MimCredit credit) {
-    state.creditsWallet.addCredit(credit);
+  void addCredit(MimCredit credit) async {
+    await state.creditsWallet.addCredit(credit);
     emit(
       CreditsWalletState(
         creditsWallet: state.creditsWallet,
