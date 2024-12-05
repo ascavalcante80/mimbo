@@ -45,7 +45,6 @@ class Project extends Equatable {
   // function to create JSON from project
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
       'owner_id': ownerId,
       'name': name,
       'description': description,
@@ -88,12 +87,15 @@ class Project extends Equatable {
       category: documentSnapshot['category'],
       createdAt: documentSnapshot['created_at'].toDate(),
       officialUrl: documentSnapshot['official_url'],
-      installationUrls: documentSnapshot['installation_urls'],
-      keywords: documentSnapshot['keywords'],
-      languages: documentSnapshot['languages'],
-      screenshotsPics: documentSnapshot['screenshots_pics'],
-      unreadAnswersIds: documentSnapshot['unread_answers_ids'],
-      feedbackAssessmentIds: documentSnapshot['feedback_assessment_ids'],
+      installationUrls:
+          Map<String, String>.from(documentSnapshot['installation_urls']),
+      keywords: List<String>.from(documentSnapshot['keywords']),
+      languages: List<String>.from(documentSnapshot['languages']),
+      screenshotsPics: List<String>.from(documentSnapshot['screenshots_pics']),
+      unreadAnswersIds:
+          List<String>.from(documentSnapshot['unread_answers_ids']),
+      feedbackAssessmentIds:
+          List<String>.from(documentSnapshot['feedback_assessment_ids']),
     );
   }
 

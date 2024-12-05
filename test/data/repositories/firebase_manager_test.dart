@@ -22,7 +22,7 @@ void main() {
     late FakeFirebaseFirestore fakeFirestore;
     late FirestoreManager firestoreManager;
     String userId = 'testUserId';
-    Project createdProject;
+
     setUp(() {
       // Initialize FakeFirestore
       fakeFirestore = FakeFirebaseFirestore();
@@ -30,7 +30,7 @@ void main() {
           FirestoreManager(userId: userId, firestore: fakeFirestore);
     });
 
-    test('Test create and read operations ', () async {
+    test('Test CRUD operations for MimUser', () async {
       FirestoreManager firestoreManager = FirestoreManager(
         userId: userId,
         firestore: fakeFirestore,
@@ -49,7 +49,79 @@ void main() {
       await firestoreManager.createUser(userMatcher);
       MimUser? userResponse = await firestoreManager.getUserByID(userId);
 
-      expect(userResponse, userMatcher, reason: 'User must be the same as the one created');
+      expect(userResponse, userMatcher,
+          reason: 'User must be the same as the one created');
+    });
+
+    test('Test CRUD operations for Project', () async {
+      Project project = Project(
+        id: 'mockId',
+        ownerId: '1',
+        name: 'Mock Project',
+        description: 'This is a mock project',
+        category: 'Mock Category',
+        createdAt: DateTime.now(),
+        officialUrl: 'https://mockproject.com',
+        installationUrls: {'mock': 'https://mockproject.com'},
+        keywords: ['mock', 'project'],
+        languages: ['mock'],
+        screenshotsPics: ['mock'],
+        unreadAnswersIds: ['mock'],
+        feedbackAssessmentIds: ['mock'],
+      );
+
+      String? id = await firestoreManager.createProject(project);
+      expect(id, isNotNull, reason: 'Project id must not be null');
+
+      Project createdProject = Project(
+        id: id!,
+        ownerId: project.ownerId,
+        name: project.name,
+        description: project.description,
+        category: project.category,
+        createdAt: project.createdAt,
+        officialUrl: project.officialUrl,
+        installationUrls: project.installationUrls,
+        keywords: project.keywords,
+        languages: project.languages,
+        screenshotsPics: project.screenshotsPics,
+        unreadAnswersIds: project.unreadAnswersIds,
+        feedbackAssessmentIds: project.feedbackAssessmentIds,
+      );
+      Project? fetchedProject = await firestoreManager.getProjectByID(id);
+
+      expect(fetchedProject, createdProject,
+          reason: 'Project must be the same as the one created');
+
+      Project updatedProject = Project(
+        id: fetchedProject!.id,
+        ownerId: project.ownerId,
+        name: project.name,
+        description: 'Description Updated',
+        category: project.category,
+        createdAt: project.createdAt,
+        officialUrl: project.officialUrl,
+        installationUrls: project.installationUrls,
+        keywords: project.keywords,
+        languages: project.languages,
+        screenshotsPics: project.screenshotsPics,
+        unreadAnswersIds: project.unreadAnswersIds,
+        feedbackAssessmentIds: project.feedbackAssessmentIds,
+      );
+
+      await firestoreManager.updateProject(updatedProject);
+
+      Project? fetchedUpdatedProject =
+          await firestoreManager.getProjectByID(id);
+      expect(fetchedUpdatedProject, updatedProject,
+          reason: 'Project must be the same as the one updated');
+
+      firestoreManager.deleteProject(fetchedUpdatedProject!.id);
+
+      Project? fetchedDeletedProject =
+          await firestoreManager.getProjectByID(id);
+
+      expect(fetchedDeletedProject, isNull, reason: 'Project must be null');
     });
   });
 }

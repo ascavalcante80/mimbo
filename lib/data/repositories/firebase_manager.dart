@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mimbo/data/models/projects.dart';
 
-
 import '../models/users.dart';
 
 class FirestoreManager {
@@ -65,7 +64,18 @@ class FirestoreManager {
     userJson['created_at'] = FieldValue.serverTimestamp();
     await users.doc(user.id).set(userJson);
   }
-  
+
+  Future<String?> createProject(Project project) async {
+    /// The [createProject] method is a method that creates a new [Project] in
+    /// the Firestore database. It uses the UUID of the project as the document
+    /// ID.
+    String? id;
+    await projects.add(project.toJson()).then((onValue) {
+      id = onValue.id;
+    });
+    return id;
+  }
+
   Future<Project?> getProjectByID(String id) async {
     /// The [getProjectByID] method is a method that searches for a [Project] in
     /// the Firestore database by its ID. It returns the [Project] if it
@@ -80,27 +90,19 @@ class FirestoreManager {
     return project;
   }
 
-//
-// Future<void> createUser(GnomeeUser user) async {
-//   /// The [createUser] method is a method that creates a new [GnomeeUser] in the
-//   /// Firestore database. It uses the UUID of the user as the document ID.
-//   ///
-//
-//   DocumentReference userDoc = users.doc(user.id);
-//
-//   await userDoc.get().then((value) {
-//     if (value.exists) {
-//       throw IDAlreadyExistsException();
-//     }
-//   });
-//
-//   await users.where('username', isEqualTo: user.username).get().then((value) {
-//     if (value.docs.isNotEmpty) {
-//       throw UsernameAlreadyExistsException();
-//     }
-//   });
-//   await users.doc(user.id).set(user.toJson());
-// }
+  Future<void> updateProject(Project project) async {
+    /// The [updateProject] method is a method that updates a [Project] in the
+    /// Firestore database. It uses the UUID of the project as the document
+    /// ID.
+    await projects.doc(project.id).update(project.toJson());
+  }
+
+  Future<void> deleteProject(String id) async {
+    /// The [deleteProject] method is a method that deletes a [Project] in the
+    /// Firestore database. It uses the UUID of the project as the document
+    /// ID.
+    await projects.doc(id).delete();
+  }
 }
 
 class IDAlreadyExistsException implements Exception {
