@@ -9,7 +9,7 @@ class FormFeedback extends Equatable {
   final String projectId;
   final String openTestId;
   final DateTime createdAt;
-  String? openFeedback;
+  final String? openFeedback;
   final FeedbackOptions feedbackOption;
 
   FormFeedback({
@@ -20,41 +20,46 @@ class FormFeedback extends Equatable {
     required this.openFeedback,
     required this.feedbackOption,
     required this.createdAt,
-  });
+  }){
+    assert(id.isNotEmpty);
+    assert(userId.isNotEmpty);
+    assert(projectId.isNotEmpty);
+    assert(openTestId.isNotEmpty);
+  }
 
   factory FormFeedback.fromJson(Map<String, dynamic> json) {
     return FormFeedback(
       id: json['id'],
-      userId: json['userId'],
-      projectId: json['projectId'],
-      openTestId: json['openTestId'],
-      openFeedback: json['openFeedback'],
-      feedbackOption: FeedbackOptions.values[json['feedbackOption']],
-      createdAt: DateTime.parse(json['createdAt']),
+      userId: json['user_id'],
+      projectId: json['project_id'],
+      openTestId: json['open_test_id'],
+      openFeedback: json['open_feedback'],
+      feedbackOption: FeedbackOptions.values[json['feedback_option']],
+      createdAt: DateTime.parse(json['created_at']),
     );
   }
 
   factory FormFeedback.fromDocumentSnapshot(DocumentSnapshot documentSnapshot) {
     return FormFeedback(
       id: documentSnapshot.id,
-      userId: documentSnapshot['userId'],
-      projectId: documentSnapshot['projectId'],
-      openTestId: documentSnapshot['openTestId'],
-      openFeedback: documentSnapshot['openFeedback'],
+      userId: documentSnapshot['user_id'],
+      projectId: documentSnapshot['project_id'],
+      openTestId: documentSnapshot['open_test_id'],
+      openFeedback: documentSnapshot['open_feedback'],
       feedbackOption:
-          FeedbackOptions.values[documentSnapshot['feedbackOption']],
-      createdAt: documentSnapshot['createdAt'].toDate(),
+          FeedbackOptions.values[documentSnapshot['feedback_option']],
+      createdAt: documentSnapshot['created_at'].toDate(),
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'userId': userId,
-      'projectId': projectId,
-      'openTestId': openTestId,
-      'openFeedback': openFeedback,
-      'feedbackOption': feedbackOption.name,
-      'createdAt': FieldValue.serverTimestamp(),
+      'user_id': userId,
+      'project_id': projectId,
+      'open_test_id': openTestId,
+      'open_feedback': openFeedback,
+      'feedback_option': feedbackOption.name,
+      'created_at': FieldValue.serverTimestamp(),
     };
   }
 
