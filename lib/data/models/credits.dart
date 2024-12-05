@@ -21,9 +21,9 @@ class MimCredit extends Equatable {
     required this.earnedWithTestId,
     required this.earnedByUserId,
   }) {
-    assert(id.isNotEmpty);
-    assert(earnedWithTestId.isNotEmpty);
-    assert(earnedByUserId.isNotEmpty);
+    assert(id.trim().isNotEmpty);
+    assert(earnedWithTestId.trim().isNotEmpty);
+    assert(earnedByUserId.trim().isNotEmpty);
     assert(attributedToTestId != earnedWithTestId);
     assert(attributedToTestId != consumedWithAnswerId);
     assert(earnedWithTestId != consumedWithAnswerId);

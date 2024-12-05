@@ -21,9 +21,9 @@ class MimUser extends Equatable {
     required this.gender,
     required this.projectIds,
   }) {
-    assert(id.isNotEmpty);
-    assert(name.isNotEmpty);
-    assert(username.isNotEmpty);
+    assert(id.trim().isNotEmpty);
+    assert(name.trim().isNotEmpty);
+    assert(username.trim().isNotEmpty);
   }
 
   factory MimUser.fromJson(Map<String, dynamic> json) {

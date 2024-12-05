@@ -33,11 +33,11 @@ class Project extends Equatable {
     required this.unreadAnswersIds,
     required this.feedbackAssessmentIds,
   }) {
-    assert(id.isNotEmpty);
-    assert(name.isNotEmpty);
-    assert(description.isNotEmpty);
+    assert(id.trim().isNotEmpty);
+    assert(name.trim().isNotEmpty);
+    assert(description.trim().isNotEmpty);
     assert(category.isNotEmpty);
-    assert(officialUrl.isNotEmpty);
+    assert(officialUrl.trim().isNotEmpty);
     assert(keywords.isNotEmpty);
     assert(languages.isNotEmpty);
   }
