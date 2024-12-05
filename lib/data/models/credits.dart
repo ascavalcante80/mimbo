@@ -4,12 +4,12 @@ import 'package:equatable/equatable.dart';
 class MimCredit extends Equatable {
   final String id;
   final DateTime createdAt;
-  final String attributedToTestId;
   final String earnedWithTestId;
   final String earnedByUserId;
 
   // filled when the credit is used
   DateTime? consumedAt;
+  String? attributedToTestId;
   String? consumedWithAnswerId;
 
   MimCredit({
@@ -24,13 +24,19 @@ class MimCredit extends Equatable {
     assert(id.isNotEmpty);
     assert(earnedWithTestId.isNotEmpty);
     assert(earnedByUserId.isNotEmpty);
+    assert(attributedToTestId != earnedWithTestId);
+    assert(attributedToTestId != consumedWithAnswerId);
+    assert(earnedWithTestId != consumedWithAnswerId);
+    if (consumedAt != null) {
+      assert(createdAt.isBefore(consumedAt!));
+    }
   }
 
   factory MimCredit.fromJson(Map<String, dynamic> json) {
     return MimCredit(
       id: json['id'],
       createdAt: DateTime.parse(json['created_at']),
-      attributedToTestId: json['test_id'],
+      attributedToTestId: json['attributed_to_test_id'],
       consumedAt: DateTime.parse(json['consumed_at']),
       consumedWithAnswerId: json['consumed_with_answer_id'],
       earnedWithTestId: json['earned_with_test_id'],
@@ -43,7 +49,7 @@ class MimCredit extends Equatable {
       return MimCredit(
         id: documentSnapshot.id,
         createdAt: documentSnapshot['created_at'].toDate(),
-        attributedToTestId: documentSnapshot['test_id'],
+        attributedToTestId: documentSnapshot['attributed_to_test_id'],
         consumedAt: documentSnapshot['consumed_at'].toDate(),
         consumedWithAnswerId: documentSnapshot['consumed_with_answer_id'],
         earnedWithTestId: documentSnapshot['earned_with_test_id'],
@@ -55,7 +61,7 @@ class MimCredit extends Equatable {
   Map<String, dynamic> toJson() {
     return {
       'created_at': createdAt,
-      'test_id': attributedToTestId,
+      'attributed_to_test_id': attributedToTestId,
       'consumed_at': consumedAt,
       'consumed_with_answer_id': consumedWithAnswerId,
       'earned_with_test_id': earnedWithTestId,
@@ -77,15 +83,19 @@ class MimCredit extends Equatable {
 
 class CreditsWallet {
   final List<MimCredit> mimCredits;
-  late Map<String, MimCredit> wallet;
+  late Map<String, MimCredit> _wallet;
 
   CreditsWallet({
     required this.mimCredits,
   }) {
-    wallet = Map.fromIterable(mimCredits, key: (credit) => credit.id);
+    _wallet = Map.fromIterable(mimCredits, key: (credit) => credit.id);
+
+    // Ensure that the wallet has the same number of credits as the list -
+    // this is a way to ensure that the list has no duplicates ID
+    assert(_wallet.keys.length == mimCredits.length);
   }
 
-  void consumeAvailableCredit(String answerId) {
+  Future<void> consumeAvailableCredit(String answerId) async {
     try {
       final credit = mimCredits.firstWhere(
         (credit) => credit.consumedAt == null,
@@ -94,30 +104,40 @@ class CreditsWallet {
       credit.consumedAt = DateTime.now();
       credit.consumedWithAnswerId = answerId;
     } on StateError {
-      throw NoCreditsAvailableException;
+      throw NoCreditsAvailableException();
     }
   }
 
-  int getAvailableCredits() {
+  int getTotalOfAvailableCredits() {
     return mimCredits.where((credit) => credit.consumedAt == null).length;
   }
 
-  int getConsumedCredits() {
+  int getTotalOfConsumedCredits() {
     return mimCredits.where((credit) => credit.consumedAt != null).length;
   }
 
   void addCredit(MimCredit credit) {
-    if (wallet.containsKey(credit.id)) {
-      throw Exception("Credit already exists in the wallet");
+    if (credit.consumedAt != null || credit.consumedWithAnswerId != null) {
+      throw ErrorTryingAddConsumedCredit();
+    }
+
+    if (_wallet.containsKey(credit.id)) {
+      throw CreditAlreadyInUseException();
     } else {
       mimCredits.add(credit);
-      wallet[credit.id] = credit;
+      _wallet[credit.id] = credit;
     }
   }
 }
 
-class NoCreditsAvailableException implements Exception {
-  final String message = "No credits available to consume";
+class ErrorTryingAddConsumedCredit implements Exception {
+  String errorMessage() => "Cannot add a consumed credit to the wallet";
+}
 
-  NoCreditsAvailableException(message);
+class NoCreditsAvailableException implements Exception {
+  String errorMessage() => "No credits available to consume";
+}
+
+class CreditAlreadyInUseException implements Exception {
+  String errorMessage() => "Credit is already in use";
 }
