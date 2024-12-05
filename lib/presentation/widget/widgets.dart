@@ -7,7 +7,7 @@ import 'package:gap/gap.dart';
 import 'package:mimbo/bloc/cubits/user_cubit.dart';
 
 import '../../data/constants.dart';
-import '../../utils/date_tools.dart';
+import '../../data/utils/date_tools.dart';
 import '../screens/login_screen.dart';
 
 class GoToLoginScreenButton extends StatelessWidget {

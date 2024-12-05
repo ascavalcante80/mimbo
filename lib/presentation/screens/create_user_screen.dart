@@ -7,7 +7,7 @@ import 'package:gap/gap.dart';
 
 import '../../data/repositories/firebase_manager.dart';
 import '../../data/repositories/user_manager.dart';
-import '../../utils/field_validator.dart';
+import '../../data/utils/field_validator.dart';
 import '../widget/widgets.dart';
 import 'home_screen.dart';
 
