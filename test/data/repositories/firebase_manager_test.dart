@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mimbo/bloc/cubits/project_cubit.dart';
 import 'package:mimbo/data/constants.dart';
 import 'package:mimbo/data/models/credits.dart';
+import 'package:mimbo/data/models/feedback_form.dart';
 import 'package:mimbo/data/models/projects.dart';
 
 // import 'package:gnomee/constants/enums.dart';
@@ -189,6 +190,142 @@ void main() {
           await firestoreManager.getCreditByID(createdCredit.id);
       expect(fetchedCredit, createdCredit,
           reason: 'Credit must be the same as the one created');
+    });
+
+    test('Test CRUD operations for FormFeedback', () async {
+      bool assertThrows = false;
+      try {
+        FormFeedback(
+          id: '',
+          createdAt: DateTime.now(),
+          projectId: 'mockId',
+          userId: 'mockUserId',
+          openTestId: 'toMockId',
+          openFeedback: '',
+          feedbackOption: FeedbackOptions.appInTooBetaStage,
+        );
+      } catch (e) {
+        assertThrows = true;
+      }
+
+      expect(assertThrows, true, reason: 'FormFeedback id must not be empty');
+
+      try {
+        FormFeedback(
+          id: 'id',
+          createdAt: DateTime.now(),
+          projectId: '   ',
+          userId: 'mockUserId',
+          openTestId: 'toMockId',
+          openFeedback: '',
+          feedbackOption: FeedbackOptions.appInTooBetaStage,
+        );
+      } catch (e) {
+        assertThrows = true;
+      }
+
+      expect(assertThrows, true,
+          reason: 'FormFeedback Project ID must not be empty');
+
+      try {
+        FormFeedback(
+          id: 'id',
+          createdAt: DateTime.now(),
+          projectId: 'fa',
+          userId: '',
+          openTestId: 'toMockId',
+          openFeedback: '',
+          feedbackOption: FeedbackOptions.appInTooBetaStage,
+        );
+      } catch (e) {
+        assertThrows = true;
+      }
+
+      expect(assertThrows, true,
+          reason: 'FormFeedback user ID must not be empty');
+
+      try {
+        FormFeedback(
+          id: 'id',
+          createdAt: DateTime.now(),
+          projectId: 'projectId',
+          userId: 'mockUserId',
+          openTestId: ' ',
+          openFeedback: '',
+          feedbackOption: FeedbackOptions.appInTooBetaStage,
+        );
+      } catch (e) {
+        assertThrows = true;
+      }
+
+      expect(assertThrows, true,
+          reason: 'FormFeedback open test ID must not be empty');
+
+      DateTime now = DateTime.now();
+      FormFeedback formFeedback = FormFeedback(
+        id: 'id',
+        createdAt: now,
+        projectId: 'mockId',
+        userId: 'mockUserId',
+        openTestId: 'toMockId',
+        openFeedback: '',
+        feedbackOption: FeedbackOptions.appInTooBetaStage,
+      );
+
+      String? id = await firestoreManager.createFormFeedback(formFeedback);
+      expect(id, isNotNull, reason: 'FormFeedback id must not be null');
+
+      FormFeedback createdFormFeedback = FormFeedback(
+        id: id!,
+        createdAt: formFeedback.createdAt,
+        projectId: formFeedback.projectId,
+        userId: formFeedback.userId,
+        openTestId: formFeedback.openTestId,
+        openFeedback: formFeedback.openFeedback,
+        feedbackOption: FeedbackOptions.appInTooBetaStage,
+      );
+
+      FormFeedback? fetchedFormFeedback =
+          await firestoreManager.getFormFeedbackByID(
+        createdFormFeedback.projectId,
+        createdFormFeedback.id,
+      );
+      expect(fetchedFormFeedback, createdFormFeedback,
+          reason: 'FormFeedback must be the same as the one created');
+    });
+
+    test('Fetch whole collections of Feedbacks', () async {
+      List<FormFeedback> formFeedbacks = [];
+      for (int i = 0; i < 10; i++) {
+        FormFeedback formFeedback = FormFeedback(
+          id: 'id$i',
+          createdAt: DateTime.now(),
+          projectId: 'mockId',
+          userId: 'mockUserId',
+          openTestId: 'toMockId',
+          openFeedback: '',
+          feedbackOption: FeedbackOptions.appInTooBetaStage,
+        );
+        String? id = await firestoreManager.createFormFeedback(formFeedback);
+
+        FormFeedback createdFormFeedback = FormFeedback(
+          id: id!,
+          createdAt: formFeedback.createdAt,
+          projectId: formFeedback.projectId,
+          userId: formFeedback.userId,
+          openTestId: formFeedback.openTestId,
+          openFeedback: formFeedback.openFeedback,
+          feedbackOption: FeedbackOptions.appInTooBetaStage,
+        );
+
+        formFeedbacks.add(createdFormFeedback);
+      }
+
+      List<FormFeedback> fetchedFormFeedbacks =
+          await firestoreManager.getFormFeedbacksByProjectID('mockId');
+
+      expect(fetchedFormFeedbacks, formFeedbacks,
+          reason: 'FormFeedbacks must be the same as the ones created');
     });
   });
 }
