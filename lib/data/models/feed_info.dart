@@ -3,14 +3,13 @@ import 'package:equatable/equatable.dart';
 
 // ignore: must_be_immutable
 class FeedInfo extends Equatable {
-  final String id;
+  late final String id;
   final String ownerId;
   DateTime dateCursor;
   List<String> testsIdsSeen;
   String? testInProgressId;
 
   FeedInfo({
-    required this.id,
     required this.ownerId,
     required this.dateCursor,
     required this.testsIdsSeen,
@@ -18,6 +17,7 @@ class FeedInfo extends Equatable {
   }) {
     assert(id.trim().isNotEmpty);
     assert(ownerId.trim().isNotEmpty);
+    id = ownerId;
   }
 
   factory FeedInfo.fromDocumentSnapshot(DocumentSnapshot documentSnapshot) {
@@ -27,7 +27,6 @@ class FeedInfo extends Equatable {
 
   factory FeedInfo.fromJson(Map<String, dynamic> json) {
     return FeedInfo(
-      id: json['id'],
       ownerId: json['owner_id'],
       dateCursor: json['date_cursor'].toDate(),
       testsIdsSeen: List<String>.from(json['tests_ids_seen']),
