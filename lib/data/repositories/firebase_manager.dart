@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:mimbo/data/models/credits.dart';
 import 'package:mimbo/data/models/projects.dart';
 
 import '../models/users.dart';
@@ -9,15 +10,19 @@ class FirestoreManager {
 
   late CollectionReference users;
   late CollectionReference projects;
+  late CollectionReference credits;
+  String feedbacksForms = 'feedbacks_forms';
 
   FirestoreManager({required this.userId, required this.firestore}) {
     users = firestore.collection('users');
     projects = firestore.collection('projects');
+    credits = firestore.collection('credits');
   }
 
   FirestoreManager.noUserId({required this.firestore}) {
     users = firestore.collection('users');
     projects = firestore.collection('projects');
+    credits = firestore.collection('credits');
   }
 
   Future<MimUser?> getUserByID(String id) async {
@@ -121,6 +126,35 @@ class FirestoreManager {
     await projects.doc(id).delete();
 
     // to be handle by cloud function -> to delete all tests, etc
+  }
+
+  Future<String?> createCredit(MimCredit credit) async {
+    /// The [createCredit] method is a method that creates a new [Credit] in
+    /// the Firestore database. It uses the UUID of the credit as the document
+    /// ID.
+    String? id;
+
+    await credits.add(credit.toJson()).then((onValue) {
+      id = onValue.id;
+    });
+    return id;
+  }
+
+  Future<void> updateCredit(MimCredit credit) async {
+    /// The [updateCredit] method is a method that updates a [Credit] in the
+    /// Firestore database. It uses the UUID of the credit as the document
+    /// ID.
+    await credits.doc(credit.id).update(credit.toJson());
+  }
+
+  Future<MimCredit?> getCredit(String id) async {
+    MimCredit? credit;
+    await credits.doc(id).get().then((value) {
+      if (value.exists) {
+        credit = MimCredit.fromDocumentSnapshot(value);
+      }
+    });
+    return credit;
   }
 }
 

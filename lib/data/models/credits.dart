@@ -48,6 +48,17 @@ class MimCredit extends Equatable {
     }
   }
 
+  Map<String, dynamic> toJson() {
+    return {
+      'createdAt': createdAt,
+      'testId': attributedToTestId,
+      'usedAt': consumedAt,
+      'consumedWithAnswerId': consumedWithAnswerId,
+      'earnedWithTestId': earnedWithTestId,
+      'earnedByUserId': earnedByUserId,
+    };
+  }
+
   @override
   // Important: the 'createdAt' and 'usedAt' fields are not included in the
   // props list
