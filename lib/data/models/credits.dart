@@ -20,17 +20,21 @@ class MimCredit extends Equatable {
     required this.consumedWithAnswerId,
     required this.earnedWithTestId,
     required this.earnedByUserId,
-  });
+  }) {
+    assert(id.isNotEmpty);
+    assert(earnedWithTestId.isNotEmpty);
+    assert(earnedByUserId.isNotEmpty);
+  }
 
   factory MimCredit.fromJson(Map<String, dynamic> json) {
     return MimCredit(
       id: json['id'],
-      createdAt: DateTime.parse(json['createdAt']),
-      attributedToTestId: json['testId'],
-      consumedAt: DateTime.parse(json['usedAt']),
-      consumedWithAnswerId: json['consumedWithAnswerId'],
-      earnedWithTestId: json['earnedWithTestId'],
-      earnedByUserId: json['earnedByUserId'],
+      createdAt: DateTime.parse(json['created_at']),
+      attributedToTestId: json['test_id'],
+      consumedAt: DateTime.parse(json['consumed_at']),
+      consumedWithAnswerId: json['consumed_with_answer_id'],
+      earnedWithTestId: json['earned_with_test_id'],
+      earnedByUserId: json['earned_by_user_id'],
     );
   }
 
@@ -38,24 +42,24 @@ class MimCredit extends Equatable {
     {
       return MimCredit(
         id: documentSnapshot.id,
-        createdAt: documentSnapshot['createdAt'],
-        attributedToTestId: documentSnapshot['testId'],
-        consumedAt: documentSnapshot['usedAt'],
-        consumedWithAnswerId: documentSnapshot['consumedWithAnswerId'],
-        earnedWithTestId: documentSnapshot['earnedWithTestId'],
-        earnedByUserId: documentSnapshot['earnedByUserId'],
+        createdAt: documentSnapshot['created_at'].toDate(),
+        attributedToTestId: documentSnapshot['test_id'],
+        consumedAt: documentSnapshot['consumed_at'].toDate(),
+        consumedWithAnswerId: documentSnapshot['consumed_with_answer_id'],
+        earnedWithTestId: documentSnapshot['earned_with_test_id'],
+        earnedByUserId: documentSnapshot['earned_by_user_id'],
       );
     }
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'createdAt': createdAt,
-      'testId': attributedToTestId,
-      'usedAt': consumedAt,
-      'consumedWithAnswerId': consumedWithAnswerId,
-      'earnedWithTestId': earnedWithTestId,
-      'earnedByUserId': earnedByUserId,
+      'created_at': createdAt,
+      'test_id': attributedToTestId,
+      'consumed_at': consumedAt,
+      'consumed_with_answer_id': consumedWithAnswerId,
+      'earned_with_test_id': earnedWithTestId,
+      'earned_by_user_id': earnedByUserId,
     };
   }
 

@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mimbo/bloc/cubits/project_cubit.dart';
 import 'package:mimbo/data/constants.dart';
+import 'package:mimbo/data/models/credits.dart';
 import 'package:mimbo/data/models/projects.dart';
 
 // import 'package:gnomee/constants/enums.dart';
@@ -77,14 +78,13 @@ void main() {
         projectIds: userResponse.projectIds,
       );
       bool inserted;
-      try{
+      try {
         await firestoreManager.createUser(userUpdatedSameUsername);
         inserted = true;
       } on UsernameAlreadyExistsException {
         inserted = false;
       }
       expect(inserted, false, reason: 'Username must be unique');
-
     });
 
     test('Test CRUD operations for Project', () async {
@@ -156,6 +156,39 @@ void main() {
           await firestoreManager.getProjectByID(id);
 
       expect(fetchedDeletedProject, isNull, reason: 'Project must be null');
+    });
+
+    test('Test CRUD operations for MimCredit', () async {
+      MimCredit credit = MimCredit(
+        id: 'id',
+        createdAt: DateTime.now(),
+        attributedToTestId: '',
+        consumedAt: DateTime.now(),
+        consumedWithAnswerId: 'mockId',
+        earnedWithTestId: 'mockId',
+        earnedByUserId: 'mockUserId',
+      );
+
+      String? id = await firestoreManager.createCredit(credit);
+      expect(id, isNotNull, reason: 'Credit id must not be null');
+
+      MimCredit createdCredit = MimCredit(
+        id: id!,
+        createdAt: DateTime.now(),
+        attributedToTestId: '',
+        consumedAt: DateTime.now(),
+        consumedWithAnswerId: 'mockId',
+        earnedWithTestId: 'mockId',
+        earnedByUserId: 'mockUserId',
+      );
+
+      createdCredit.consumedAt = DateTime.now();
+      await firestoreManager.updateCredit(createdCredit);
+
+      MimCredit? fetchedCredit =
+          await firestoreManager.getCreditByID(createdCredit.id);
+      expect(fetchedCredit, createdCredit,
+          reason: 'Credit must be the same as the one created');
     });
   });
 }

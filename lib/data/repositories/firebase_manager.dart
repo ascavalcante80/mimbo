@@ -133,7 +133,7 @@ class FirestoreManager {
     /// the Firestore database. It uses the UUID of the credit as the document
     /// ID.
     String? id;
-
+    // TODO to be replaced by a Cloud Function
     await credits.add(credit.toJson()).then((onValue) {
       id = onValue.id;
     });
@@ -147,7 +147,7 @@ class FirestoreManager {
     await credits.doc(credit.id).update(credit.toJson());
   }
 
-  Future<MimCredit?> getCredit(String id) async {
+  Future<MimCredit?> getCreditByID(String id) async {
     MimCredit? credit;
     await credits.doc(id).get().then((value) {
       if (value.exists) {
