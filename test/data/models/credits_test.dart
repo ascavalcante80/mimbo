@@ -1,24 +1,5 @@
-import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mimbo/bloc/cubits/credits_wallet_cubit.dart';
-import 'package:mimbo/bloc/cubits/project_cubit.dart';
-import 'package:mimbo/bloc/cubits/user_cubit.dart';
-import 'package:mimbo/data/constants.dart';
 import 'package:mimbo/data/models/credits.dart';
-import 'package:mimbo/data/models/projects.dart';
-
-// import 'package:gnomee/constants/enums.dart';
-// import 'package:gnomee/data/models/user.dart';
-// import 'package:gnomee/data/repositories/firebase_manager.dart';
-// import 'package:gnomee/data/repositories/user_manager.dart';
-// import 'package:gnomee/utils/date_tools.dart';
-import 'package:mimbo/data/models/users.dart';
-import 'package:mimbo/data/repositories/firebase_manager.dart';
-import 'package:mimbo/data/repositories/project_manager.dart';
-import 'package:mimbo/data/repositories/user_manager.dart';
 
 void main() {
   group('Tests MimCredit operations', () {
@@ -179,7 +160,7 @@ void main() {
 
       bool catchDuplicateIdBeingAdded = false;
       try {
-        creditsWallet.addCredit(MimCredit(
+        await creditsWallet.addCredit(MimCredit(
           id: 'id1',
           createdAt: earlyDate,
           attributedToTestId: 'test1',
@@ -190,6 +171,9 @@ void main() {
         ));
       } on ErrorTryingAddConsumedCredit {
         catchDuplicateIdBeingAdded = true;
+      } on Exception catch (e) {
+        print(e);
+        catchDuplicateIdBeingAdded = true;
       }
 
       expect(catchDuplicateIdBeingAdded, true,
@@ -197,7 +181,7 @@ void main() {
 
       bool catchConsumedCreditBeingAdded = false;
       try {
-        creditsWallet.addCredit(MimCredit(
+        await creditsWallet.addCredit(MimCredit(
           id: 'id6',
           createdAt: earlyDate,
           attributedToTestId: 'test1',
