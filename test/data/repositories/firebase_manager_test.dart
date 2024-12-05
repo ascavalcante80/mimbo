@@ -51,6 +51,40 @@ void main() {
 
       expect(userResponse, userMatcher,
           reason: 'User must be the same as the one created');
+
+      MimUser userUpdated = MimUser(
+        id: userResponse!.id,
+        username: 'usernameUpdated',
+        name: userResponse.name,
+        createdAt: userResponse.createdAt,
+        birthdate: userResponse.birthdate,
+        gender: userResponse.gender,
+        projectIds: userResponse.projectIds,
+      );
+      await firestoreManager.updateUser(userUpdated);
+
+      MimUser? updatedUserResponse = await firestoreManager.getUserByID(userId);
+      expect(userUpdated, updatedUserResponse,
+          reason: 'User must be the same as the one updated');
+
+      MimUser userUpdatedSameUsername = MimUser(
+        id: 'id2',
+        username: 'usernameUpdated',
+        name: userResponse.name,
+        createdAt: userResponse.createdAt,
+        birthdate: userResponse.birthdate,
+        gender: userResponse.gender,
+        projectIds: userResponse.projectIds,
+      );
+      bool inserted;
+      try{
+        await firestoreManager.createUser(userUpdatedSameUsername);
+        inserted = true;
+      } on UsernameAlreadyExistsException {
+        inserted = false;
+      }
+      expect(inserted, false, reason: 'Username must be unique');
+
     });
 
     test('Test CRUD operations for Project', () async {

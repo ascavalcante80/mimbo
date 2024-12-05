@@ -44,16 +44,42 @@ class FirestoreManager {
         throw IDAlreadyExistsException();
       }
     });
+
     // checks if the username already exists
-    await users.where('username', isEqualTo: user.username).get().then((value) {
-      if (value.docs.isNotEmpty) {
-        throw UsernameAlreadyExistsException();
-      }
-    });
+    await checkUsername(user.username);
+
     // converts created_at to a server timestamp
     Map<String, dynamic> userJson = user.toJson();
     userJson['created_at'] = FieldValue.serverTimestamp();
     await users.doc(user.id).set(userJson);
+  }
+
+  Future<void> updateUser(MimUser user) async {
+    /// The [updateUser] method is a method that updates a [MimUser] in the
+    /// Firestore database. It uses the UUID of the user as the document ID.
+
+    // checks if the username already exists
+    await checkUsername(user.username);
+
+    await users.doc(user.id).update(user.toJson());
+  }
+
+  Future<void> checkUsername(String username) async {
+    /// The [checkUsername] method is a method that checks if a username already
+    /// exists in the Firestore database. It throws an exception if the username
+    /// already exists.
+    await users.where('username', isEqualTo: username).get().then((value) {
+      if (value.docs.isNotEmpty) {
+        throw UsernameAlreadyExistsException();
+      }
+    });
+  }
+
+  Future<void> deleteUser(MimUser user) async {
+    /// The [deleteUser] method is a method that deletes a [MimUser] in the
+    /// Firestore database. It uses the UUID of the user as the document ID.
+
+    // to be handle by cloud function -> to delete all projects, tests, etc
   }
 
   Future<String?> createProject(Project project) async {
@@ -93,6 +119,8 @@ class FirestoreManager {
     /// Firestore database. It uses the UUID of the project as the document
     /// ID.
     await projects.doc(id).delete();
+
+    // to be handle by cloud function -> to delete all tests, etc
   }
 }
 
