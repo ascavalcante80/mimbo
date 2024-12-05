@@ -160,13 +160,16 @@ void main() {
     });
 
     test('Test CRUD operations for MimCredit', () async {
+
+      DateTime before = DateTime(2021, 1, 1);
+      DateTime after = DateTime(2022, 2, 1);
       MimCredit credit = MimCredit(
         id: 'id',
-        createdAt: DateTime.now(),
+        createdAt: before,
         attributedToTestId: '',
-        consumedAt: DateTime.now(),
+        consumedAt: after,
         consumedWithAnswerId: 'mockId',
-        earnedWithTestId: 'mockId',
+        earnedWithTestId: 'earnedWithTestId',
         earnedByUserId: 'mockUserId',
       );
 
@@ -175,11 +178,11 @@ void main() {
 
       MimCredit createdCredit = MimCredit(
         id: id!,
-        createdAt: DateTime.now(),
+        createdAt: before,
         attributedToTestId: '',
-        consumedAt: DateTime.now(),
+        consumedAt: after,
         consumedWithAnswerId: 'mockId',
-        earnedWithTestId: 'mockId',
+        earnedWithTestId: 'earnedWithTestId',
         earnedByUserId: 'mockUserId',
       );
 
