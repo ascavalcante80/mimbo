@@ -9,24 +9,15 @@ class FirestoreManager {
 
   late CollectionReference users;
   late CollectionReference projects;
-  late CollectionReference reactions;
-  late CollectionReference usernames;
-  late CollectionReference userCreatedItems;
-  final String reactionPerformedCollectionName = 'reactions_performed';
 
   FirestoreManager({required this.userId, required this.firestore}) {
     users = firestore.collection('users');
     projects = firestore.collection('projects');
-    reactions = firestore.collection('reactions');
-    usernames = firestore.collection('usernames');
-    userCreatedItems = users.doc(userId).collection('created_items');
   }
 
   FirestoreManager.noUserId({required this.firestore}) {
     users = firestore.collection('users');
-    projects = firestore.collection('items');
-    reactions = firestore.collection('reactions');
-    usernames = firestore.collection('usernames');
+    projects = firestore.collection('projects');
   }
 
   Future<MimUser?> getUserByID(String id) async {
