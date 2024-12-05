@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
+import 'package:mimbo/data/utils/misc_parsers.dart';
 
 import '../constants.dart';
 
@@ -20,11 +21,11 @@ class FormFeedback extends Equatable {
     required this.openFeedback,
     required this.feedbackOption,
     required this.createdAt,
-  }){
-    assert(id.isNotEmpty);
-    assert(userId.isNotEmpty);
-    assert(projectId.isNotEmpty);
-    assert(openTestId.isNotEmpty);
+  }) {
+    assert(id.trim().isNotEmpty);
+    assert(userId.trim().isNotEmpty);
+    assert(projectId.trim().isNotEmpty);
+    assert(openTestId.trim().isNotEmpty);
   }
 
   factory FormFeedback.fromJson(Map<String, dynamic> json) {
@@ -47,7 +48,7 @@ class FormFeedback extends Equatable {
       openTestId: documentSnapshot['open_test_id'],
       openFeedback: documentSnapshot['open_feedback'],
       feedbackOption:
-          FeedbackOptions.values[documentSnapshot['feedback_option']],
+          getFeedbackOptionFromString(documentSnapshot['feedback_option']),
       createdAt: documentSnapshot['created_at'].toDate(),
     );
   }
