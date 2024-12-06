@@ -29,11 +29,11 @@ class _UserLoadingScreenState extends State<UserLoadingScreen> {
     super.initState();
     assert(FirebaseAuth.instance.currentUser != null);
     assert(FirebaseAuth.instance.currentUser!.emailVerified);
-    // loadDataAndRedirect();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      BlocProvider.of<LoadingUserDisplayBloc>(context)
-          .add(LoadingUserDisplayInitialEvent());
+      loadDataAndRedirect();
+      // BlocProvider.of<LoadingUserDisplayBloc>(context)
+      //     .add(LoadingUserStartedEvent());
     });
   }
 
@@ -53,18 +53,8 @@ class _UserLoadingScreenState extends State<UserLoadingScreen> {
       userId: userId,
       firestoreManager: firestoreManager,
     );
-    await userManager.loadUser(context, updateMessage);
-  }
-
-  Future<void> updateMessage(String message) async {
-    /// Updates the message displayed on the screen.
-    log('message to display: $message');
-    if (context.mounted) {
-      setState(() {
-        this.message = message;
-      });
-    }
-    await Future.delayed(const Duration(seconds: 2));
+    log('Start loading user function =====');
+    await userManager.loadUser(context);
   }
 
   @override

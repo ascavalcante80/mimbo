@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mimbo/data/repositories/project_manager.dart';
 
+import '../../logic/bloc/loading_user_display_bloc.dart';
 import '../../logic/cubits/user_cubit.dart';
 import '../../presentation/screens/create_user_screen.dart';
 import '../../presentation/screens/home_screen.dart';
@@ -18,13 +19,15 @@ class UserManager {
 
   UserManager({required this.userId, required this.firestoreManager});
 
-  Future<void> loadUser(BuildContext context, Function operationUpdate) async {
+  Future<void> loadUser(BuildContext context) async {
     /// Loads the user from the Firestore database. If the user does not exist,
     /// the user is redirected to the [CreateMimUserScreen]. If the user exists,
     /// the user is redirected to the [HomeScreen].
     /// it also updates blocs with user data and project data.
 
-    await operationUpdate('loading Mimbo user...');
+    BlocProvider.of<LoadingUserDisplayBloc>(context)
+        .add(LoadingUserStartedEvent());
+    await Future.delayed(const Duration(seconds: 1));
 
     FirestoreManager firestoreManager =
         FirestoreManager(userId: userId, firestore: FirebaseFirestore.instance);
@@ -33,48 +36,34 @@ class UserManager {
       mimUser = await firestoreManager.getUserByID(userId);
     } catch (e) {
       log('Error loading user: $e');
-      // sets the message to empty to make go to login button visible
-      await operationUpdate("");
+      BlocProvider.of<LoadingUserDisplayBloc>(context)
+          .add(ErrorLoadingUserEvent());
+      await Future.delayed(const Duration(seconds: 1));
+
       return;
     }
 
     if (mimUser == null) {
-      if (context.mounted) {
-        await operationUpdate("Please create a user account.");
-      }
-      if (context.mounted) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const CreateMimUserScreen(),
-          ),
-        );
-      }
-
-      return;
+      BlocProvider.of<LoadingUserDisplayBloc>(context).add(UserNotFoundEvent());
+      await Future.delayed(const Duration(seconds: 1));
     } else {
-      if (!context.mounted) {
-        await operationUpdate(
-            "Error loading user. Please restart the app. If the problem persists, contact support.");
-        return;
-      } else {
-        // update the user state
-        BlocProvider.of<MimUserCubit>(context).updateUser(mimUser);
+      // update the user state
+      BlocProvider.of<MimUserCubit>(context).updateUser(mimUser);
+      await Future.delayed(const Duration(seconds: 1));
 
-        // load project
-        if (mimUser.projectIds.isNotEmpty) {
-          ProjectManager projectManager = ProjectManager(
-              userId: userId, firestoreManager: firestoreManager);
-          projectManager.loadProject(mimUser.projectIds[0], context);
-        }
+      // load project
+      if (mimUser.projectIds.isNotEmpty) {
+        BlocProvider.of<LoadingUserDisplayBloc>(context)
+            .add(LoadingProjectsEvent());
+        await Future.delayed(const Duration(seconds: 1));
 
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const HomeScreen(),
-          ),
-        );
+        ProjectManager projectManager =
+            ProjectManager(userId: userId, firestoreManager: firestoreManager);
+        projectManager.loadProject(mimUser.projectIds[0], context);
       }
+
+      BlocProvider.of<LoadingUserDisplayBloc>(context)
+          .add(LoadingCompleteEvent());
     }
   }
 

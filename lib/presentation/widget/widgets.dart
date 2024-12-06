@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
+import 'package:mimbo/presentation/screens/create_user_screen.dart';
 
 import '../../data/constants.dart';
 import '../../data/utils/date_tools.dart';
@@ -264,31 +265,38 @@ class LoadUserDisplay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<LoadingUserDisplayBloc, LoadUserDisplayState>(
+    return BlocConsumer<LoadingUserDisplayBloc, LoadUserState>(
         builder: (context, state) {
-      if (state is LoadingUserInitialState) {
-        log('state circular progress');
-        return const CircularProgressIndicator();
+      if (state is LoadingUserState) {
+        return const Text('Loading user...');
       } else if (state is LoadingProjectsState) {
-        log('state loading projects');
         return const Text('Loading projects...');
+      } else if (state is ErrorLoadingProjectsState ||
+          state is ErrorLoadingUserState) {
+        return const Text('An error occurred');
+      } else if (state is LoadingCompleteState) {
+        return const Text('Loading complete!');
       } else {
-        log('state loading projects');
-        return const Text('All set!');
+        return const Text('Welcome to Mimbo');
       }
     }, listener: (context, state) {
-          if(state is AllSetState) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const HomeScreen(),
-              ),
-            );
+      if (state is LoadingCompleteState) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const HomeScreen(),
+          ),
+        );
+      }
 
-
-
-
-          }
+      if (state is UserNotFoundState) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const CreateMimUserScreen(),
+          ),
+        );
+      }
       // push to the next screen when all is set
     });
   }
