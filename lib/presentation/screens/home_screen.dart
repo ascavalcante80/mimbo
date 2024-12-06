@@ -1,14 +1,17 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:mimbo/logic/cubits/page_controller_cubit.dart';
 
 import '../../data/constants.dart';
 import '../../data/models/users.dart';
 import '../../logic/cubits/user_cubit.dart';
 import '../widget/widgets.dart';
-
+import 'create_project_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   // TODO place holder for home screen
@@ -20,12 +23,14 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
+int currentPageIndex = 0;
+
 class _HomeScreenState extends State<HomeScreen> {
-  int currentPageIndex = 0;
   List<Widget> pages = <Widget>[
     const LabRoom(),
     const FeedScreen(),
     const ProfileScreen(),
+    const CreateProjectScreen(),
   ];
 
   @override
@@ -34,15 +39,17 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: const Text('Home Screen'),
       ),
-      body: pages[currentPageIndex],
+      body: BlocBuilder<PageControllerCubit, PageControllerState>(
+          builder: (context, state) {
+        return pages[state.currentPageIndex];
+      }),
       bottomNavigationBar: NavigationBar(
         elevation: 10,
         height: 45,
         labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
         onDestinationSelected: (int index) {
-          setState(() {
-            currentPageIndex = index;
-          });
+          BlocProvider.of<PageControllerCubit>(context)
+              .updateCurrentPageIndex(index);
         },
         indicatorColor: Colors.transparent,
         selectedIndex: currentPageIndex,
@@ -100,15 +107,27 @@ class FeedScreen extends StatelessWidget {
   }
 }
 
-class LabRoom extends StatelessWidget {
+class LabRoom extends StatefulWidget {
   const LabRoom({super.key});
 
   @override
+  State<LabRoom> createState() => _LabRoomState();
+}
+
+class _LabRoomState extends State<LabRoom> {
+  @override
   Widget build(BuildContext context) {
     return Column(
-      children: const [
+      children: [
         Text('Welcome to the Lab Room'),
         Text('🧪'),
+        TextButton(
+            onPressed: () {
+              log('Create Project');
+              BlocProvider.of<PageControllerCubit>(context)
+                  .updateCurrentPageIndex(3);
+            },
+            child: const Text('Create Profile')),
       ],
     );
   }
