@@ -15,3 +15,27 @@ enum FeedbackOptions {
   appInTooBetaStage,
   other,
 }
+
+enum AppCategory {
+  books,
+  business,
+  education,
+  entertainment,
+  finance,
+  foodAndDrink,
+  games,
+  healthAndFitness,
+  lifestyle,
+  medical,
+  music,
+  news,
+  photoAndVideo,
+  productivity,
+  reference,
+  shopping,
+  socialNetworking,
+  sports,
+  travel,
+  utilities,
+  weather,
+}

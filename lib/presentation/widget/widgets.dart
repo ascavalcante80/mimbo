@@ -301,3 +301,108 @@ class LoadUserDisplay extends StatelessWidget {
     });
   }
 }
+
+class DDownProjectCategory extends StatefulWidget {
+  AppCategory? selectedValue = AppCategory.books;
+
+  DDownProjectCategory({super.key});
+
+  @override
+  State<DDownProjectCategory> createState() => _DDownProjectCategoryState();
+}
+
+class _DDownProjectCategoryState extends State<DDownProjectCategory> {
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        const Text('Select a category'),
+        const Gap(10),
+        Container(
+          decoration: BoxDecoration(
+            // color is set according the theme
+            color: Theme.of(context).brightness == Brightness.light
+                ? Colors.white
+                : Colors.grey.shade800,
+          ),
+          child: DropdownButton<AppCategory>(
+            value: widget.selectedValue,
+            icon: const Icon(Icons.arrow_downward),
+            onChanged: (AppCategory? value) {
+              // This is called when the user selects an item.
+              setState(() {
+                widget.selectedValue = value!;
+              });
+            },
+            dropdownColor: Colors.white,
+            // Set the background color of the dropdown menu
+            items: AppCategory.values
+                .map<DropdownMenuItem<AppCategory>>((AppCategory value) {
+              return DropdownMenuItem<AppCategory>(
+                value: value,
+                child: Text(value.name),
+              );
+            }).toList(),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class KeywordsInput extends StatefulWidget {
+  List<String> keywords = [];
+
+  KeywordsInput({super.key});
+
+  @override
+  State<KeywordsInput> createState() => _KeywordsInputState();
+}
+
+class _KeywordsInputState extends State<KeywordsInput> {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        const Text('Keywords'),
+        const Gap(10),
+        Row(
+          children: [
+            SizedBox(
+              height: 200,
+              width: 200,
+              child: TextFormField(
+                decoration: const InputDecoration(
+                  labelText: 'Keywords',
+                ),
+              ),
+            ),
+            IconButton(
+              onPressed: () {
+                setState(() {
+                  widget.keywords.add('new keyword');
+                });
+              },
+              icon: const Icon(Icons.add),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Row chipRow() {
+    return Row(
+      children: widget.keywords
+          .map((keyword) => Chip(
+                label: Text(keyword),
+                onDeleted: () {
+                  setState(() {
+                    widget.keywords.remove(keyword);
+                  });
+                },
+              ))
+          .toList(),
+    );
+  }
+}
