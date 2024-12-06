@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -9,6 +10,7 @@ import 'package:mimbo/presentation/widget/widgets.dart';
 
 import '../../data/repositories/firebase_manager.dart';
 import '../../data/repositories/user_manager.dart';
+import '../../logic/bloc/loading_user_display_bloc.dart';
 
 class UserLoadingScreen extends StatefulWidget {
   /// The [UserLoadingScreen] is displayed when the user is signed in and
@@ -27,10 +29,12 @@ class _UserLoadingScreenState extends State<UserLoadingScreen> {
     super.initState();
     assert(FirebaseAuth.instance.currentUser != null);
     assert(FirebaseAuth.instance.currentUser!.emailVerified);
-    loadDataAndRedirect();
+    // loadDataAndRedirect();
 
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
-    // });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      BlocProvider.of<LoadingUserDisplayBloc>(context)
+          .add(LoadingUserDisplayInitialEvent());
+    });
   }
 
   String message = '';
@@ -69,15 +73,16 @@ class _UserLoadingScreenState extends State<UserLoadingScreen> {
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.app_bar_title_loading_user),
       ),
-      body: Center(
+      body: const Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            message.isEmpty ? errorDisplay() : Text(message),
-            const Gap(20),
-            message.isNotEmpty
-                ? const CircularProgressIndicator()
-                : const SizedBox(),
+            LoadUserDisplay(),
+            // message.isEmpty ? errorDisplay() : Text(message),
+            // const Gap(20),
+            // message.isNotEmpty
+            //     ? const CircularProgressIndicator()
+            //     : const SizedBox(),
           ],
         ),
       ),

@@ -7,7 +7,9 @@ import 'package:gap/gap.dart';
 
 import '../../data/constants.dart';
 import '../../data/utils/date_tools.dart';
+import '../../logic/bloc/loading_user_display_bloc.dart';
 import '../../logic/cubits/user_cubit.dart';
+import '../screens/home_screen.dart';
 import '../screens/login_screen.dart';
 
 class GoToLoginScreenButton extends StatelessWidget {
@@ -254,5 +256,40 @@ class UsernameDisplay extends StatelessWidget {
         }
       },
     );
+  }
+}
+
+class LoadUserDisplay extends StatelessWidget {
+  const LoadUserDisplay({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocConsumer<LoadingUserDisplayBloc, LoadUserDisplayState>(
+        builder: (context, state) {
+      if (state is LoadingUserInitialState) {
+        log('state circular progress');
+        return const CircularProgressIndicator();
+      } else if (state is LoadingProjectsState) {
+        log('state loading projects');
+        return const Text('Loading projects...');
+      } else {
+        log('state loading projects');
+        return const Text('All set!');
+      }
+    }, listener: (context, state) {
+          if(state is AllSetState) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const HomeScreen(),
+              ),
+            );
+
+
+
+
+          }
+      // push to the next screen when all is set
+    });
   }
 }
