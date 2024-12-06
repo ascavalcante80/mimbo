@@ -15,6 +15,7 @@ import 'package:mimbo/logic/bloc/loading_user_display_bloc.dart';
 import 'package:mimbo/presentation/widget/widgets.dart';
 
 import 'firebase_options.dart';
+import 'logic/cubits/page_controller_cubit.dart';
 import 'logic/cubits/project_cubit.dart';
 import 'logic/cubits/user_cubit.dart';
 import 'presentation/screens/home_screen.dart';
@@ -70,6 +71,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => LoadingUserDisplayBloc(),
+        ),
+        BlocProvider(
+          create: (context) => PageControllerCubit(),
         ),
       ],
       child: MaterialApp(
