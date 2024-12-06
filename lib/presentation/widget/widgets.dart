@@ -4,10 +4,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
-import 'package:mimbo/bloc/cubits/user_cubit.dart';
 
 import '../../data/constants.dart';
 import '../../data/utils/date_tools.dart';
+import '../../logic/cubits/user_cubit.dart';
 import '../screens/login_screen.dart';
 
 class GoToLoginScreenButton extends StatelessWidget {

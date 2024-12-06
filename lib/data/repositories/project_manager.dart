@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../bloc/cubits/project_cubit.dart';
+import '../../logic/cubits/project_cubit.dart';
 import '../models/projects.dart';
 import 'firebase_manager.dart';
 

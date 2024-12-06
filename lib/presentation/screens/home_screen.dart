@@ -3,10 +3,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:mimbo/bloc/cubits/user_cubit.dart';
-import 'package:mimbo/data/constants.dart';
-import 'package:mimbo/data/models/users.dart';
-import 'package:mimbo/presentation/widget/widgets.dart';
+
+import '../../data/constants.dart';
+import '../../data/models/users.dart';
+import '../../logic/cubits/user_cubit.dart';
+import '../widget/widgets.dart';
+
 
 class HomeScreen extends StatefulWidget {
   // TODO place holder for home screen

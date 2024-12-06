@@ -3,13 +3,12 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mimbo/bloc/cubits/user_cubit.dart';
-import 'package:mimbo/data/constants.dart';
-import 'package:mimbo/data/models/projects.dart';
 import 'package:mimbo/data/repositories/project_manager.dart';
-import 'package:mimbo/presentation/screens/create_user_screen.dart';
 
+import '../../logic/cubits/user_cubit.dart';
+import '../../presentation/screens/create_user_screen.dart';
 import '../../presentation/screens/home_screen.dart';
+import '../constants.dart';
 import '../models/users.dart';
 import 'firebase_manager.dart';
 
@@ -64,7 +63,8 @@ class UserManager {
 
         // load project
         if (mimUser.projectIds.isNotEmpty) {
-          ProjectManager projectManager = ProjectManager(userId: userId, firestoreManager: firestoreManager);
+          ProjectManager projectManager = ProjectManager(
+              userId: userId, firestoreManager: firestoreManager);
           projectManager.loadProject(mimUser.projectIds[0], context);
         }
 

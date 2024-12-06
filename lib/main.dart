@@ -9,13 +9,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:cloud_functions/cloud_functions.dart';
-
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:mimbo/bloc/cubits/project_cubit.dart';
-import 'package:mimbo/bloc/cubits/user_cubit.dart';
 
 import 'firebase_options.dart';
+import 'logic/cubits/project_cubit.dart';
+import 'logic/cubits/user_cubit.dart';
 import 'presentation/screens/home_screen.dart';
 import 'presentation/screens/login_screen.dart';
 
