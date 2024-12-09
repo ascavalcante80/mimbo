@@ -9,7 +9,11 @@ import '../../data/models/projects.dart';
 class ProjectCubit extends Cubit<ProjectState> {
   ProjectCubit() : super(ProjectInitialState(project: null));
 
-  void updateProject(Project project) => emit(ProjectLoadedState(project: project));
+  void updateProject(Project project) =>
+      emit(ProjectLoadedState(project: project));
+
+  void deleteProject(Project project) =>
+      emit(ProjectInitialState(project: null));
 
   @override
   void onChange(Change<ProjectState> change) {

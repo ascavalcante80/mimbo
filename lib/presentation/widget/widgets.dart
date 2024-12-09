@@ -4,11 +4,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
+import 'package:mimbo/logic/bloc/project_bloc.dart';
 import 'package:mimbo/presentation/screens/create_user_screen.dart';
 
 import '../../data/constants.dart';
 import '../../data/utils/date_tools.dart';
 import '../../logic/bloc/loading_user_display_bloc.dart';
+import '../../logic/cubits/page_controller_cubit.dart';
+import '../../logic/cubits/project_cubit.dart';
 import '../../logic/cubits/user_cubit.dart';
 import '../screens/home_screen.dart';
 import '../screens/login_screen.dart';
@@ -480,6 +483,69 @@ class _KeywordsInputState extends State<KeywordsInput> {
         content: Text('You can only add $maxKeywords keywords'),
         duration: const Duration(seconds: 2),
       ),
+    );
+  }
+}
+
+class ProjectOperationsButton extends StatelessWidget {
+  const ProjectOperationsButton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocConsumer<ProjectButtonBloc, ProjectState>(
+      listener: (context, state) {
+        if (state is ErrorDeletingProjectState) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('Error deleting project'),
+          ));
+        } else if (state is ProjectCreatedState) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('Project created!'),
+          ));
+        } else if (state is ProjectUpdatedState) {
+          log('project updated!');
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('Project updated!'),
+          ));
+        }
+      },
+      builder: (context, state) {
+        if (state is SavingProjectState) {
+          return const CircularProgressIndicator();
+        } else if (state is ProjectLoadedState ||
+            state is ProjectUpdatedState ||
+            state is ProjectCreatedState) {
+          return Column(
+            children: [
+              TextButton(
+                  onPressed: () {
+                    BlocProvider.of<PageControllerCubit>(context)
+                        .updateCurrentPageIndex(3);
+                  },
+                  child: const Text('Edit project')),
+              TextButton(
+                  onPressed: () {
+                    // set project state to null
+                    BlocProvider.of<ProjectButtonBloc>(context).add(
+                        DeleteProjectButtonPressed(project: state.project!));
+
+                    BlocProvider.of<ProjectCubit>(context).deleteProject(state.project!);
+                  },
+                  child: const Text('Delete project')),
+            ],
+          );
+        } else if (state is ErrorSavingProjectSate) {
+          return const Text('Error loading project info');
+        } else {
+          return TextButton(
+              onPressed: () {
+                log('Create Project');
+                BlocProvider.of<PageControllerCubit>(context)
+                    .updateCurrentPageIndex(3);
+              },
+              child: const Text('Create Profile'));
+        }
+      },
     );
   }
 }

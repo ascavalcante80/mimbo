@@ -20,7 +20,17 @@ final class ProjectCreatedState extends ProjectState {
 
 final class ErrorSavingProjectSate extends ProjectState {
   ProjectError errorType;
+
   ErrorSavingProjectSate({required super.project, required this.errorType});
+}
+
+final class ErrorDeletingProjectState extends ProjectState {
+  ProjectError errorType;
+
+  ErrorDeletingProjectState({
+    required super.project,
+    required this.errorType,
+  });
 }
 
 final class ProjectLoadedState extends ProjectState {

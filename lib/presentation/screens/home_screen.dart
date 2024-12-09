@@ -117,17 +117,11 @@ class LabRoom extends StatefulWidget {
 class _LabRoomState extends State<LabRoom> {
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return const Column(
       children: [
         Text('Welcome to the Lab Room'),
         Text('🧪'),
-        TextButton(
-            onPressed: () {
-              log('Create Project');
-              BlocProvider.of<PageControllerCubit>(context)
-                  .updateCurrentPageIndex(3);
-            },
-            child: const Text('Create Profile')),
+        ProjectOperationsButton(),
       ],
     );
   }

@@ -25,3 +25,7 @@ class ProjectSavedEvent extends ProjectEvent {
 class ErrorSavingProjectEvent extends ProjectEvent {
   ErrorSavingProjectEvent({required super.project});
 }
+
+class DeleteProjectButtonPressed extends ProjectEvent {
+  DeleteProjectButtonPressed({required super.project});
+}

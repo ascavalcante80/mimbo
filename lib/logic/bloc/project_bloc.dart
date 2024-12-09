@@ -48,6 +48,14 @@ class ProjectButtonBloc extends Bloc<ProjectEvent, ProjectState> {
         emit(ErrorSavingProjectSate(
             project: null, errorType: ProjectError.firestoreError));
       }
+    } else if (event is DeleteProjectButtonPressed) {
+      try {
+        firestoreManager.deleteProject(event.project!.id);
+        emit(ProjectInitialState(project: null));
+      } catch (e) {
+        emit(ErrorDeletingProjectState(
+            project: null, errorType: ProjectError.firestoreError));
+      }
     }
   }
 }

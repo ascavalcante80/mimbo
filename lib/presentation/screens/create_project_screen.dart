@@ -109,7 +109,9 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
         if (state is SavingProjectState) {
           log('Saving project....');
           return const CircularProgressIndicator();
-        } else if (state is ProjectLoadedState) {
+        } else if (state is ProjectLoadedState ||
+            state is ProjectUpdatedState ||
+            state is ProjectCreatedState) {
           return Row(
             children: [
               cancelButton(),
@@ -118,13 +120,14 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
           );
         } else if (state is ErrorSavingProjectSate) {
           return const Text('Error saving project');
+        } else {
+          return Row(
+            children: [
+              cancelButton(),
+              saveProjectButton(),
+            ],
+          );
         }
-        return Row(
-          children: [
-            cancelButton(),
-            saveProjectButton(),
-          ],
-        );
       },
     );
   }
@@ -206,6 +209,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
     _descriptionController.clear();
     _officialUrlController.clear();
     _keywordsInput.keywords.clear();
+    _urlsScreenshots.clear();
   }
 
   @override
