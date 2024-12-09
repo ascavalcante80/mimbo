@@ -2,21 +2,45 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 
 class Project extends Equatable {
-  final String id;
+  late final String id;
   final String ownerId;
+
   final String name;
   final String description;
   final String category;
-
-  final DateTime createdAt;
   final String officialUrl;
-  final Map<String, String> installationUrls;
+
+  late final Map<String, String> installationUrls;
+  late final DateTime createdAt;
 
   final List<String> keywords;
-  final List<String> languages;
-  final List<String> screenshotsPics;
-  final List<String> unreadAnswersIds;
-  final List<String> feedbackAssessmentIds;
+  late final List<String> languages;
+  late final List<String> screenshotsPics;
+  late final List<String> unreadAnswersIds;
+  late final List<String> feedbackAssessmentIds;
+
+  Project.emptyProject({
+    required this.ownerId,
+    required this.name,
+    required this.description,
+    required this.category,
+    required this.officialUrl,
+    required this.keywords,
+  }) {
+    id = 'temp_id';
+    createdAt = DateTime.now();
+    installationUrls = {};
+    screenshotsPics = [];
+    unreadAnswersIds = [];
+    feedbackAssessmentIds = [];
+    languages = ['default'];
+
+    assert(id.trim().isNotEmpty);
+    assert(name.trim().isNotEmpty);
+    assert(description.trim().isNotEmpty);
+    assert(category.isNotEmpty);
+    assert(officialUrl.trim().isNotEmpty);
+  }
 
   Project({
     required this.id,
@@ -38,8 +62,7 @@ class Project extends Equatable {
     assert(description.trim().isNotEmpty);
     assert(category.isNotEmpty);
     assert(officialUrl.trim().isNotEmpty);
-    assert(keywords.isNotEmpty);
-    assert(languages.isNotEmpty);
+
   }
 
   // function to create JSON from project
@@ -96,6 +119,24 @@ class Project extends Equatable {
           List<String>.from(documentSnapshot['unread_answers_ids']),
       feedbackAssessmentIds:
           List<String>.from(documentSnapshot['feedback_assessment_ids']),
+    );
+  }
+
+  Project copyWithUpdateId(String id) {
+    return Project(
+      id: id,
+      ownerId: ownerId,
+      name: name,
+      description: description,
+      category: category,
+      createdAt: createdAt,
+      officialUrl: officialUrl,
+      installationUrls: installationUrls,
+      keywords: keywords,
+      languages: languages,
+      screenshotsPics: screenshotsPics,
+      unreadAnswersIds: unreadAnswersIds,
+      feedbackAssessmentIds: feedbackAssessmentIds,
     );
   }
 

@@ -15,6 +15,7 @@ import 'package:mimbo/logic/bloc/loading_user_display_bloc.dart';
 import 'package:mimbo/presentation/widget/widgets.dart';
 
 import 'firebase_options.dart';
+import 'logic/bloc/project_bloc.dart';
 import 'logic/cubits/page_controller_cubit.dart';
 import 'logic/cubits/project_cubit.dart';
 import 'logic/cubits/user_cubit.dart';
@@ -75,6 +76,9 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => PageControllerCubit(),
         ),
+        BlocProvider(
+          create: (context) => ProjectButtonBloc(),
+        )
       ],
       child: MaterialApp(
         title: 'Flutter Demo',

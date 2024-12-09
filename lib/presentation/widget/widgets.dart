@@ -302,8 +302,45 @@ class LoadUserDisplay extends StatelessWidget {
   }
 }
 
+class OfficialURLInfoButton extends StatelessWidget {
+  const OfficialURLInfoButton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      onPressed: () {
+        displayModal(context);
+      },
+      icon: const Icon(Icons.info),
+    );
+  }
+
+  void displayModal(BuildContext context) {
+    // display a modal to confirm the creation of the project
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Column(
+          children: [
+            const Text('Enter here the URL point to your project page, '
+                'where users can get know more about your app. '
+                'The URL to install the app (.i.e: TestFlight, etc) will be '
+                'added later when you create your first form feedback.'),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('No'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
 class DDownProjectCategory extends StatefulWidget {
-  AppCategory? selectedValue = AppCategory.books;
+  AppCategory selectedValue = AppCategory.books;
 
   DDownProjectCategory({super.key});
 
@@ -360,33 +397,58 @@ class KeywordsInput extends StatefulWidget {
 }
 
 class _KeywordsInputState extends State<KeywordsInput> {
+  final TextEditingController _keywordController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final int maxKeywords = 3;
+
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const Text('Keywords'),
-        const Gap(10),
         Row(
           children: [
             SizedBox(
-              height: 200,
+              height: 50,
               width: 200,
-              child: TextFormField(
-                decoration: const InputDecoration(
-                  labelText: 'Keywords',
+              child: Form(
+                key: _formKey,
+                child: TextFormField(
+                  controller: _keywordController,
+                  decoration: const InputDecoration(
+                    labelText: 'Keywords',
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter a keyword';
+                    }
+                    return null;
+                  },
                 ),
               ),
             ),
             IconButton(
               onPressed: () {
+                // validate form
+                if (!_formKey.currentState!.validate()) {
+                  return;
+                }
+
+                if (widget.keywords.length >= maxKeywords) {
+                  maxKeywordsReached(context);
+                  return;
+                }
                 setState(() {
-                  widget.keywords.add('new keyword');
+                  if (!widget.keywords.contains(_keywordController.text)) {
+                    widget.keywords.add(_keywordController.text);
+                    _keywordController.clear();
+                  }
                 });
               },
               icon: const Icon(Icons.add),
             ),
           ],
         ),
+        chipRow(),
       ],
     );
   }
@@ -394,15 +456,30 @@ class _KeywordsInputState extends State<KeywordsInput> {
   Row chipRow() {
     return Row(
       children: widget.keywords
-          .map((keyword) => Chip(
+          .map(
+            (keyword) => Padding(
+              padding: const EdgeInsets.only(left: 4.0, right: 4.0),
+              child: Chip(
                 label: Text(keyword),
                 onDeleted: () {
                   setState(() {
                     widget.keywords.remove(keyword);
                   });
                 },
-              ))
+              ),
+            ),
+          )
           .toList(),
+    );
+  }
+
+  void maxKeywordsReached(BuildContext context) {
+    // display snack bar
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('You can only add $maxKeywords keywords'),
+        duration: const Duration(seconds: 2),
+      ),
     );
   }
 }

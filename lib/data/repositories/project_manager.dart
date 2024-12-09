@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mimbo/logic/bloc/project_bloc.dart';
+import 'package:mimbo/logic/cubits/user_cubit.dart';
 
 import '../../logic/cubits/project_cubit.dart';
 import '../models/projects.dart';
@@ -32,32 +34,7 @@ class ProjectManager {
     }
   }
 
-  Future<Project> createProject(
-    String name,
-    String description,
-    String category,
-    String officialUrl,
-    Map<String, String> installationUrls,
-    List<String> keywords,
-    List<String> languages,
-    List<String> screenshotsPics,
-    List<String> unreadAnswersIds,
-    List<String> feedbackAssessmentIds,
-  ) async {
-    return Project(
-      id: '1',
-      ownerId: '1',
-      name: name,
-      description: 'This is a mock project',
-      category: 'Mock Category',
-      createdAt: DateTime.now(),
-      officialUrl: 'https://mockproject.com',
-      installationUrls: {'mock': 'https://mockproject.com'},
-      keywords: ['mock', 'project'],
-      languages: ['mock'],
-      screenshotsPics: ['mock'],
-      unreadAnswersIds: ['mock'],
-      feedbackAssessmentIds: ['mock'],
-    );
+  Future<Project?> createProject(Project project) async {
+    await firestoreManager.createProject(project);
   }
 }
