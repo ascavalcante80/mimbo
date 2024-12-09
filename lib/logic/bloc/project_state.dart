@@ -19,9 +19,14 @@ final class ProjectCreatedState extends ProjectState {
 }
 
 final class ErrorSavingProjectSate extends ProjectState {
-  ErrorSavingProjectSate({required super.project});
+  ProjectError errorType;
+  ErrorSavingProjectSate({required super.project, required this.errorType});
 }
 
 final class ProjectLoadedState extends ProjectState {
   ProjectLoadedState({required super.project});
+}
+
+final class ProjectUpdatedState extends ProjectState {
+  ProjectUpdatedState({required super.project});
 }

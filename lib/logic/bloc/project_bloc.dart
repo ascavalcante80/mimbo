@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meta/meta.dart';
+import 'package:mimbo/data/constants.dart';
 import 'package:mimbo/data/repositories/firebase_manager.dart';
 import 'package:mimbo/data/repositories/project_manager.dart';
 import 'package:mimbo/logic/cubits/project_cubit.dart';
@@ -24,13 +25,29 @@ class ProjectButtonBloc extends Bloc<ProjectEvent, ProjectState> {
 
     if (event is SaveProjectButtonPressed) {
       emit(SavingProjectState(project: null));
-      String? projectId = await firestoreManager.createProject(event.project!);
-      if (projectId == null) {
-        emit(ErrorSavingProjectSate(project: null));
-        return;
+      try {
+        String? projectId =
+            await firestoreManager.createProject(event.project!);
+        if (projectId == null) {
+          emit(ErrorSavingProjectSate(
+              project: null, errorType: ProjectError.firestoreError));
+          return;
+        }
+        Project savedProject = event.project!.copyWithUpdateId(projectId);
+        emit(ProjectCreatedState(project: savedProject));
+      } catch (e) {
+        emit(ErrorSavingProjectSate(
+            project: null, errorType: ProjectError.firestoreError));
       }
-      Project savedProject = event.project!.copyWithUpdateId(projectId);
-      emit(ProjectCreatedState(project: savedProject));
+    } else if (event is SaveChangesButtonPressed) {
+      emit(SavingProjectState(project: null));
+      try {
+        await firestoreManager.updateProject(event.project!);
+        emit(ProjectUpdatedState(project: event.project!));
+      } catch (e) {
+        emit(ErrorSavingProjectSate(
+            project: null, errorType: ProjectError.firestoreError));
+      }
     }
   }
 }

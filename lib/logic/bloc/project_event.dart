@@ -10,6 +10,10 @@ class SaveProjectButtonPressed extends ProjectEvent {
   SaveProjectButtonPressed({required super.project});
 }
 
+class SaveChangesButtonPressed extends ProjectEvent {
+  SaveChangesButtonPressed({required super.project});
+}
+
 class SavingProjectEvent extends ProjectEvent {
   SavingProjectEvent({required super.project});
 }

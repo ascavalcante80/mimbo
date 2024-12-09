@@ -75,7 +75,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                   onPressed: () {}, icon: Icon(Icons.camera_alt_outlined)),
             ],
           ),
-          saveProject(),
+          bottomButtons(),
         ],
       ),
     );
@@ -83,23 +83,22 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
 
   void fillForm(BuildContext context) {
     // bloc has project loaded state
-
     if (BlocProvider.of<ProjectCubit>(context).state is ProjectLoadedState) {
       project = BlocProvider.of<ProjectCubit>(context).state.project!;
       _nameController.text = project.name;
       _descriptionController.text = project.description;
       _officialUrlController.text = project.officialUrl;
-      _keywordsInput.keywords = project.keywords;
+      _keywordsInput.keywords = List<String>.from(project.keywords);
       _projectCategoryMenu.selectedValue = project.category;
       _urlsScreenshots.addAll(project.screenshotsPics);
     }
   }
 
-  BlocConsumer saveProject() {
+  BlocConsumer bottomButtons() {
     return BlocConsumer<ProjectButtonBloc, ProjectState>(
       listener: (context, state) {
         // return to the lab room
-        if (state is ProjectCreatedState) {
+        if (state is ProjectCreatedState || state is ProjectUpdatedState) {
           BlocProvider.of<ProjectCubit>(context).updateProject(state.project!);
 
           BlocProvider.of<PageControllerCubit>(context)
@@ -110,48 +109,96 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
         if (state is SavingProjectState) {
           log('Saving project....');
           return const CircularProgressIndicator();
-        } else if (state is ProjectCreatedState) {
-          return const Text('Project saved!');
+        } else if (state is ProjectLoadedState) {
+          return Row(
+            children: [
+              cancelButton(),
+              saveChangesButtons(),
+            ],
+          );
         } else if (state is ErrorSavingProjectSate) {
           return const Text('Error saving project');
         }
         return Row(
           children: [
-            ElevatedButton(
-                onPressed: () {
-                  // clear the form
-                  clearForm();
-
-                  // return to the lab room
-                  BlocProvider.of<PageControllerCubit>(context)
-                      .updateCurrentPageIndex(0);
-                },
-                child: const Text('Cancel')),
-            ElevatedButton(
-                onPressed: () async {
-                  // validate the form
-
-                  String userId =
-                      BlocProvider.of<MimUserCubit>(context).state.user!.id;
-                  Project project = Project.emptyProject(
-                    ownerId: userId,
-                    name: _nameController.text,
-                    description: _descriptionController.text,
-                    category: _projectCategoryMenu.selectedValue,
-                    officialUrl: _officialUrlController.text,
-                    keywords: List<String>.from(_keywordsInput.keywords),
-                  );
-
-                  // emit state button pressed
-                  BlocProvider.of<ProjectButtonBloc>(context)
-                      .add(SaveProjectButtonPressed(project: project));
-                  clearForm();
-                },
-                child: const Text('Create Project')),
+            cancelButton(),
+            saveProjectButton(),
           ],
         );
       },
     );
+  }
+
+  ElevatedButton saveChangesButtons() {
+    return ElevatedButton(
+      onPressed: () {
+        if (validateForm(context)) {
+          // emit state button pressed
+          BlocProvider.of<ProjectButtonBloc>(context)
+              .add(SaveProjectButtonPressed(project: project));
+          clearForm();
+        }
+      },
+      child: const Text('Save Changes'),
+    );
+  }
+
+  ElevatedButton cancelButton() {
+    return ElevatedButton(
+        onPressed: () {
+          // clear the form
+          clearForm();
+
+          // return to the lab room
+          BlocProvider.of<PageControllerCubit>(context)
+              .updateCurrentPageIndex(0);
+        },
+        child: const Text('Cancel'));
+  }
+
+  ElevatedButton saveProjectButton() {
+    return ElevatedButton(
+        onPressed: () async {
+          // validate the form
+          if (validateForm(context)) {
+            Project projectNew = Project.emptyProject(
+              ownerId: BlocProvider.of<MimUserCubit>(context).state.user!.id,
+              name: _nameController.text,
+              description: _descriptionController.text,
+              officialUrl: _officialUrlController.text,
+              category: _projectCategoryMenu.selectedValue,
+              keywords: List<String>.from(_keywordsInput.keywords),
+            );
+
+            // emit state button pressed
+            BlocProvider.of<ProjectButtonBloc>(context)
+                .add(SaveProjectButtonPressed(project: projectNew));
+            clearForm();
+          }
+        },
+        child: const Text('Create Project'));
+  }
+
+  bool validateForm(BuildContext context) {
+    if (_formKey.currentState!.validate()) {
+      // save the project
+      if (_keywordsInput.keywords.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Please add at least one keyword'),
+        ));
+        return false;
+      }
+
+      // if (_urlsScreenshots.isEmpty) {
+      //   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      //     content: Text('Please add at least one screenshot'),
+      //   ));
+      //   return false;
+      // }
+      return true;
+    } else {
+      return false;
+    }
   }
 
   void clearForm() {

@@ -39,3 +39,7 @@ enum AppCategory {
   utilities,
   weather,
 }
+
+enum ProjectError {
+  firestoreError,
+}
