@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meta/meta.dart';
 import 'package:mimbo/data/repositories/firebase_manager.dart';
 import 'package:mimbo/data/repositories/project_manager.dart';
+import 'package:mimbo/logic/cubits/project_cubit.dart';
 
 import '../../data/models/projects.dart';
 
@@ -29,7 +30,7 @@ class ProjectButtonBloc extends Bloc<ProjectEvent, ProjectState> {
         return;
       }
       Project savedProject = event.project!.copyWithUpdateId(projectId);
-      emit(ProjectSavedState(project: savedProject));
+      emit(ProjectCreatedState(project: savedProject));
     }
   }
 }

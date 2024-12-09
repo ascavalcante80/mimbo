@@ -24,47 +24,47 @@ FeedbackOptions getFeedbackOptionFromString(String feedbackOption) {
 
 AppCategory getAppCategoryFromString(String category) {
   switch (category) {
-    case 'books':
+    case 'AppCategory.books':
       return AppCategory.books;
-    case 'business':
+    case 'AppCategory.business':
       return AppCategory.business;
-    case 'education':
+    case 'AppCategory.education':
       return AppCategory.education;
-    case 'entertainment':
+    case 'AppCategory.entertainment':
       return AppCategory.entertainment;
-    case 'finance':
+    case 'AppCategory.finance':
       return AppCategory.finance;
-    case 'foodAndDrink':
+    case 'AppCategory.foodAndDrink':
       return AppCategory.foodAndDrink;
-    case 'games':
+    case 'AppCategory.games':
       return AppCategory.games;
-    case 'healthAndFitness':
+    case 'AppCategory.healthAndFitness':
       return AppCategory.healthAndFitness;
-    case 'lifestyle':
+    case 'AppCategory.lifestyle':
       return AppCategory.lifestyle;
-    case 'medical':
+    case 'AppCategory.medical':
       return AppCategory.medical;
-    case 'music':
+    case 'AppCategory.music':
       return AppCategory.music;
-    case 'news':
+    case 'AppCategory.news':
       return AppCategory.news;
-    case 'photoAndVideo':
+    case 'AppCategory.photoAndVideo':
       return AppCategory.photoAndVideo;
-    case 'productivity':
+    case 'AppCategory.productivity':
       return AppCategory.productivity;
-    case 'reference':
+    case 'AppCategory.reference':
       return AppCategory.reference;
-    case 'shopping':
+    case 'AppCategory.shopping':
       return AppCategory.shopping;
-    case 'socialNetworking':
+    case 'AppCategory.socialNetworking':
       return AppCategory.socialNetworking;
-    case 'sports':
+    case 'AppCategory.sports':
       return AppCategory.sports;
-    case 'travel':
+    case 'AppCategory.travel':
       return AppCategory.travel;
-    case 'utilities':
+    case 'AppCategory.utilities':
       return AppCategory.utilities;
-    case 'weather':
+    case 'AppCategory.weather':
       return AppCategory.weather;
 
     default:

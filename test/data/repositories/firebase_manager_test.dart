@@ -83,7 +83,7 @@ void main() {
         ownerId: '1',
         name: 'Mock Project',
         description: 'This is a mock project',
-        category: 'Mock Category',
+        category: AppCategory.books,
         createdAt: DateTime.now(),
         officialUrl: 'https://mockproject.com',
         installationUrls: {'mock': 'https://mockproject.com'},

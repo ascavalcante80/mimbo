@@ -1,14 +1,15 @@
 import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
+import 'package:mimbo/logic/bloc/project_bloc.dart';
 import '../../data/models/projects.dart';
 
-part 'project_state.dart';
+// part 'project_state.dart';
 
 class ProjectCubit extends Cubit<ProjectState> {
-  ProjectCubit() : super(ProjectState(project: null));
+  ProjectCubit() : super(ProjectInitialState(project: null));
 
-  void updateProject(Project project) => emit(ProjectState(project: project));
+  void updateProject(Project project) => emit(ProjectLoadedState(project: project));
 
   @override
   void onChange(Change<ProjectState> change) {

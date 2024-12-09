@@ -1,5 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
+import 'package:mimbo/data/constants.dart';
+import 'package:mimbo/presentation/widget/widgets.dart';
+
+import '../utils/misc_parsers.dart';
 
 class Project extends Equatable {
   late final String id;
@@ -7,7 +11,7 @@ class Project extends Equatable {
 
   final String name;
   final String description;
-  final String category;
+  final AppCategory category;
   final String officialUrl;
 
   late final Map<String, String> installationUrls;
@@ -38,7 +42,6 @@ class Project extends Equatable {
     assert(id.trim().isNotEmpty);
     assert(name.trim().isNotEmpty);
     assert(description.trim().isNotEmpty);
-    assert(category.isNotEmpty);
     assert(officialUrl.trim().isNotEmpty);
   }
 
@@ -60,9 +63,7 @@ class Project extends Equatable {
     assert(id.trim().isNotEmpty);
     assert(name.trim().isNotEmpty);
     assert(description.trim().isNotEmpty);
-    assert(category.isNotEmpty);
     assert(officialUrl.trim().isNotEmpty);
-
   }
 
   // function to create JSON from project
@@ -71,7 +72,7 @@ class Project extends Equatable {
       'owner_id': ownerId,
       'name': name,
       'description': description,
-      'category': category,
+      'category': category.toString(),
       'created_at': createdAt,
       'official_url': officialUrl,
       'installation_urls': installationUrls,
@@ -107,7 +108,7 @@ class Project extends Equatable {
       ownerId: documentSnapshot['owner_id'],
       name: documentSnapshot['name'],
       description: documentSnapshot['description'],
-      category: documentSnapshot['category'],
+      category: getAppCategoryFromString(documentSnapshot['category']),
       createdAt: documentSnapshot['created_at'].toDate(),
       officialUrl: documentSnapshot['official_url'],
       installationUrls:

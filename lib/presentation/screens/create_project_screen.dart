@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mimbo/logic/cubits/project_cubit.dart';
 
 import '../../data/models/projects.dart';
 import '../../logic/bloc/project_bloc.dart';
@@ -18,9 +19,11 @@ class CreateProjectScreen extends StatefulWidget {
 }
 
 class _CreateProjectScreenState extends State<CreateProjectScreen> {
+  late Project project;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final DDownProjectCategory _projectCategoryMenu = DDownProjectCategory();
   final KeywordsInput _keywordsInput = KeywordsInput();
+  final List<String> _urlsScreenshots = [];
 
   // Text controllers
   final TextEditingController _nameController = TextEditingController();
@@ -29,6 +32,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
 
   @override
   Widget build(BuildContext context) {
+    fillForm(context);
     return Form(
       key: _formKey,
       child: Column(
@@ -77,11 +81,27 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
     );
   }
 
+  void fillForm(BuildContext context) {
+    // bloc has project loaded state
+
+    if (BlocProvider.of<ProjectCubit>(context).state is ProjectLoadedState) {
+      project = BlocProvider.of<ProjectCubit>(context).state.project!;
+      _nameController.text = project.name;
+      _descriptionController.text = project.description;
+      _officialUrlController.text = project.officialUrl;
+      _keywordsInput.keywords = project.keywords;
+      _projectCategoryMenu.selectedValue = project.category;
+      _urlsScreenshots.addAll(project.screenshotsPics);
+    }
+  }
+
   BlocConsumer saveProject() {
     return BlocConsumer<ProjectButtonBloc, ProjectState>(
       listener: (context, state) {
         // return to the lab room
-        if (state is ProjectSavedState) {
+        if (state is ProjectCreatedState) {
+          BlocProvider.of<ProjectCubit>(context).updateProject(state.project!);
+
           BlocProvider.of<PageControllerCubit>(context)
               .updateCurrentPageIndex(0);
         }
@@ -90,7 +110,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
         if (state is SavingProjectState) {
           log('Saving project....');
           return const CircularProgressIndicator();
-        } else if (state is ProjectSavedState) {
+        } else if (state is ProjectCreatedState) {
           return const Text('Project saved!');
         } else if (state is ErrorSavingProjectSate) {
           return const Text('Error saving project');
@@ -117,9 +137,9 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                     ownerId: userId,
                     name: _nameController.text,
                     description: _descriptionController.text,
-                    category: _projectCategoryMenu.selectedValue.toString(),
+                    category: _projectCategoryMenu.selectedValue,
                     officialUrl: _officialUrlController.text,
-                    keywords: _keywordsInput.keywords,
+                    keywords: List<String>.from(_keywordsInput.keywords),
                   );
 
                   // emit state button pressed
