@@ -6,11 +6,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:mimbo/logic/bloc/user_bloc.dart';
 import 'package:mimbo/presentation/widget/widgets.dart';
 
 import '../../data/repositories/firebase_manager.dart';
 import '../../data/repositories/user_manager.dart';
-import '../../logic/bloc/loading_user_display_bloc.dart';
 
 class UserLoadingScreen extends StatefulWidget {
   /// The [UserLoadingScreen] is displayed when the user is signed in and
@@ -32,8 +32,6 @@ class _UserLoadingScreenState extends State<UserLoadingScreen> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       loadDataAndRedirect();
-      // BlocProvider.of<LoadingUserDisplayBloc>(context)
-      //     .add(LoadingUserStartedEvent());
     });
   }
 
@@ -43,18 +41,9 @@ class _UserLoadingScreenState extends State<UserLoadingScreen> {
     /// The [loadDataAndRedirect] method loads the user data and redirects the
     /// app to the home screen. If the user data is not found, it displays an
     /// error message.
-    String userId = FirebaseAuth.instance.currentUser!.uid;
-    FirestoreManager firestoreManager = FirestoreManager(
-      userId: userId,
-      firestore: FirebaseFirestore.instance,
-    );
 
-    UserManager userManager = UserManager(
-      userId: userId,
-      firestoreManager: firestoreManager,
-    );
-    log('Start loading user function =====');
-    await userManager.loadUser(context);
+    String userId = FirebaseAuth.instance.currentUser!.uid;
+    BlocProvider.of<UserBloc>(context).add(GetUserEvent(userId: userId));
   }
 
   @override
@@ -68,11 +57,6 @@ class _UserLoadingScreenState extends State<UserLoadingScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             LoadUserDisplay(),
-            // message.isEmpty ? errorDisplay() : Text(message),
-            // const Gap(20),
-            // message.isNotEmpty
-            //     ? const CircularProgressIndicator()
-            //     : const SizedBox(),
           ],
         ),
       ),
