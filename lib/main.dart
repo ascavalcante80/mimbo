@@ -11,7 +11,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:mimbo/logic/bloc/loading_user_display_bloc.dart';
+import 'package:mimbo/logic/bloc/user_bloc.dart';
 import 'package:mimbo/presentation/widget/widgets.dart';
 
 import 'firebase_options.dart';
@@ -71,7 +71,7 @@ class MyApp extends StatelessWidget {
           create: (context) => ProjectCubit(),
         ),
         BlocProvider(
-          create: (context) => LoadingUserDisplayBloc(),
+          create: (context) => UserBloc(),
         ),
         BlocProvider(
           create: (context) => PageControllerCubit(),
