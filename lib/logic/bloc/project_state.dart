@@ -40,3 +40,11 @@ final class ProjectLoadedState extends ProjectState {
 final class ProjectUpdatedState extends ProjectState {
   ProjectUpdatedState({required super.project});
 }
+
+final class DeletingProjectState extends ProjectState {
+  DeletingProjectState({required super.project});
+}
+
+final class ProjectDeletedState extends ProjectState {
+  ProjectDeletedState({required super.project});
+}
