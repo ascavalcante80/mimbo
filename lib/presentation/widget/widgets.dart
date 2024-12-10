@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:mimbo/logic/bloc/project_bloc.dart';
+import 'package:mimbo/logic/bloc/user_bloc.dart';
 import 'package:mimbo/presentation/screens/create_user_screen.dart';
 
 import '../../data/constants.dart';
 import '../../data/utils/date_tools.dart';
-import '../../logic/bloc/loading_user_display_bloc.dart';
 import '../../logic/cubits/page_controller_cubit.dart';
 import '../../logic/cubits/project_cubit.dart';
 import '../../logic/cubits/user_cubit.dart';
@@ -251,7 +251,7 @@ class UsernameDisplay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<MimUserCubit, MimUserState>(
+    return BlocBuilder<MimUserCubit, UserState>(
       builder: (context, state) {
         if (state.user == null) {
           return Text('User not logged in.');
@@ -268,22 +268,22 @@ class LoadUserDisplay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<LoadingUserDisplayBloc, LoadUserState>(
-        builder: (context, state) {
-      if (state is LoadingUserState) {
+    return BlocConsumer<UserBloc, UserState>(builder: (context, state) {
+      if (state is UserLoadingState) {
         return const Text('Loading user...');
-      } else if (state is LoadingProjectsState) {
+      } else if (state is LoadingUserProjectsState) {
         return const Text('Loading projects...');
-      } else if (state is ErrorLoadingProjectsState ||
-          state is ErrorLoadingUserState) {
+      } else if (state is ErrorLoadingUserProject ||
+          state is ErrorLoadingUser) {
         return const Text('An error occurred');
-      } else if (state is LoadingCompleteState) {
+      } else if (state is UserLoadedState) {
         return const Text('Loading complete!');
       } else {
         return const Text('Welcome to Mimbo');
       }
     }, listener: (context, state) {
-      if (state is LoadingCompleteState) {
+      if (state is UserLoadedState) {
+        BlocProvider.of<MimUserCubit>(context).updateUser(state.user!);
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
@@ -529,7 +529,8 @@ class ProjectOperationsButton extends StatelessWidget {
                     BlocProvider.of<ProjectButtonBloc>(context).add(
                         DeleteProjectButtonPressed(project: state.project!));
 
-                    BlocProvider.of<ProjectCubit>(context).deleteProject(state.project!);
+                    BlocProvider.of<ProjectCubit>(context)
+                        .deleteProject(state.project!);
                   },
                   child: const Text('Delete project')),
             ],
