@@ -69,8 +69,14 @@ class FirestoreManager {
     /// The [updateUser] method is a method that updates a [MimUser] in the
     /// Firestore database. It uses the UUID of the user as the document ID.
 
-    // checks if the username already exists
-    await checkUsername(user.username);
+    MimUser? oldUser = await getUserByID(user.id);
+    if (oldUser == null) {
+      throw Exception('User not found');
+    }
+
+    if (oldUser.username != user.username) {
+      await checkUsername(user.username);
+    }
 
     await usersCollection.doc(user.id).update(user.toJson());
   }
