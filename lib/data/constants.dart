@@ -42,4 +42,10 @@ enum AppCategory {
 
 enum ProjectError {
   firestoreError,
+  projectNotFound,
+  projectOwnerNotFound,
+}
+
+enum UserError {
+  firestoreError,
 }
