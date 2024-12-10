@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mimbo/data/repositories/project_manager.dart';
 
-import '../../logic/bloc/loading_user_display_bloc.dart';
 import '../../logic/cubits/user_cubit.dart';
 import '../../presentation/screens/create_user_screen.dart';
 import '../../presentation/screens/home_screen.dart';
@@ -25,46 +24,46 @@ class UserManager {
     /// the user is redirected to the [HomeScreen].
     /// it also updates blocs with user data and project data.
 
-    BlocProvider.of<LoadingUserDisplayBloc>(context)
-        .add(LoadingUserStartedEvent());
-    await Future.delayed(const Duration(seconds: 1));
-
-    FirestoreManager firestoreManager =
-        FirestoreManager(userId: userId, firestore: FirebaseFirestore.instance);
-    MimUser? mimUser;
-    try {
-      mimUser = await firestoreManager.getUserByID(userId);
-    } catch (e) {
-      log('Error loading user: $e');
-      BlocProvider.of<LoadingUserDisplayBloc>(context)
-          .add(ErrorLoadingUserEvent());
-      await Future.delayed(const Duration(seconds: 1));
-
-      return;
-    }
-
-    if (mimUser == null) {
-      BlocProvider.of<LoadingUserDisplayBloc>(context).add(UserNotFoundEvent());
-      await Future.delayed(const Duration(seconds: 1));
-    } else {
-      // update the user state
-      BlocProvider.of<MimUserCubit>(context).updateUser(mimUser);
-      await Future.delayed(const Duration(seconds: 1));
-
-      // load project
-      if (mimUser.projectIds.isNotEmpty) {
-        BlocProvider.of<LoadingUserDisplayBloc>(context)
-            .add(LoadingProjectsEvent());
-        await Future.delayed(const Duration(seconds: 1));
-
-        ProjectManager projectManager =
-            ProjectManager(userId: userId, firestoreManager: firestoreManager);
-        projectManager.loadProject(mimUser.projectIds[0], context);
-      }
-
-      BlocProvider.of<LoadingUserDisplayBloc>(context)
-          .add(LoadingCompleteEvent());
-    }
+    // BlocProvider.of<LoadingUserDisplayBloc>(context)
+    //     .add(LoadingUserStartedEvent());
+    // await Future.delayed(const Duration(seconds: 1));
+    //
+    // FirestoreManager firestoreManager =
+    //     FirestoreManager(userId: userId, firestore: FirebaseFirestore.instance);
+    // MimUser? mimUser;
+    // try {
+    //   mimUser = await firestoreManager.getUserByID(userId);
+    // } catch (e) {
+    //   log('Error loading user: $e');
+    //   BlocProvider.of<LoadingUserDisplayBloc>(context)
+    //       .add(ErrorLoadingUserEvent());
+    //   await Future.delayed(const Duration(seconds: 1));
+    //
+    //   return;
+    // }
+    //
+    // if (mimUser == null) {
+    //   BlocProvider.of<LoadingUserDisplayBloc>(context).add(UserNotFoundEvent());
+    //   await Future.delayed(const Duration(seconds: 1));
+    // } else {
+    //   // update the user state
+    //   BlocProvider.of<MimUserCubit>(context).updateUser(mimUser);
+    //   await Future.delayed(const Duration(seconds: 1));
+    //
+    //   // load project
+    //   if (mimUser.projectIds.isNotEmpty) {
+    //     BlocProvider.of<LoadingUserDisplayBloc>(context)
+    //         .add(LoadProjectsStartedEvent());
+    //     await Future.delayed(const Duration(seconds: 1));
+    //
+    //     ProjectManager projectManager =
+    //         ProjectManager(userId: userId, firestoreManager: firestoreManager);
+    //     projectManager.loadProject(mimUser.projectIds[0], context);
+    //   }
+    //
+    //   BlocProvider.of<LoadingUserDisplayBloc>(context)
+    //       .add(LoadingCompleteEvent());
+    // }
   }
 
   Future<String?> createUser(
