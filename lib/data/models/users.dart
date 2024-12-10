@@ -73,7 +73,7 @@ class MimUser extends Equatable {
       'birthdate': birthdate,
       'name': name,
       'gender': gender.name,
-      'project_ids': projectIds,
+      'project_ids': List<String>.from(projectIds),
     };
   }
 
