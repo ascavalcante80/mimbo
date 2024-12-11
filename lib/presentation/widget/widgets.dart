@@ -507,26 +507,30 @@ class ProjectButtonsOperations extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<ProjectOperationsBloc, ProjectOperationsState>(
         builder: (context, state) {
-          if (state is ProjectOperationsInitial) {
-            return TextButton(
-              onPressed: () {
-                Navigator.pushNamed(context, CreateProjectScreen.routeName);
-              },
-              child: const Text('Create project'),
-            );
-          } else if (state is ProjectOperationStarted) {
-            return const CircularProgressIndicator();
-          } else if (state is ProjectCreated) {
-            return const Column(
-              children: [
-                Text('edit project'),
-                Text('delete project'),
-              ],
-            );
-          } else {
-            return const Text('');
-          }
-        },
-        listener: (context, state) {});
+      if (state is ProjectOperationsInitial) {
+        return TextButton(
+          onPressed: () {
+            Navigator.pushNamed(context, CreateProjectScreen.routeName);
+          },
+          child: const Text('Create project'),
+        );
+      } else if (state is ProjectOperationStarted) {
+        return const CircularProgressIndicator();
+      } else if (state is ProjectCreated ||
+          state is ProjectOperationCompleted) {
+        return const Column(
+          children: [
+            Text('edit project'),
+            Text('delete project'),
+          ],
+        );
+      } else {
+        return Text('estado unknown ${state.toString()}');
+      }
+    }, listener: (context, state) {
+      if (state is ProjectOperationCompleted) {
+        Navigator.of(context).pop();
+      }
+    });
   }
 }
