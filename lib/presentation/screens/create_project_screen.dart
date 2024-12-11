@@ -132,7 +132,10 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
           return Row(
             children: [
               CancelProjectCreationButton(clearForm: clearForm),
-              saveProjectButtonSelector(),
+              SaveProjectButtonSelector(
+                  validateForm: validateForm,
+                  clearForm: clearForm,
+                  buildProject: buildProject),
             ],
           );
         }
@@ -140,47 +143,47 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
     );
   }
 
-  BlocConsumer saveProjectButtonSelector() {
-    return BlocConsumer<ProjectCubit, ProjectState>(builder: (context, state) {
-      if (state is ProjectInitial || state is ProjectDeleteState) {
-        return ElevatedButton(
-          onPressed: () {
-            if (validateForm(context)) {
-              // emit state button pressed
-              Project project = buildProject();
-              BlocProvider.of<ProjectOperationsBloc>(context)
-                  .add(CreateProjectButtonPressed(project: project));
-            }
-          },
-          child: const Text('Create Project'),
-        );
-      } else if (state is ProjectLoadedState || state is ProjectUpdateState) {
-        return ElevatedButton(
-          onPressed: () {
-            if (validateForm(context)) {
-              // emit state button pressed
-              Project updatedProject = buildProject();
-              updatedProject =
-                  updatedProject.copyWithUpdateId(state.project!.id);
-
-              BlocProvider.of<ProjectOperationsBloc>(context)
-                  .add(SaveChangesButtonPressed(project: updatedProject));
-            }
-          },
-          child: const Text('Save Project'),
-        );
-      } else {
-        return const Text('Error loading project status');
-      }
-    }, listener: (context, state) {
-      if (state is ProjectCreated || state is ProjectUpdated) {
-        clearForm();
-        // update cubit
-        BlocProvider.of<ProjectCubit>(context).updateProject(state.project!);
-        Navigator.of(context).pop();
-      }
-    });
-  }
+  // BlocConsumer saveProjectButtonSelector() {
+  //   return BlocConsumer<ProjectCubit, ProjectState>(builder: (context, state) {
+  //     if (state is ProjectInitial || state is ProjectDeleteState) {
+  //       return ElevatedButton(
+  //         onPressed: () {
+  //           if (validateForm(context)) {
+  //             // emit state button pressed
+  //             Project project = buildProject();
+  //             BlocProvider.of<ProjectOperationsBloc>(context)
+  //                 .add(CreateProjectButtonPressed(project: project));
+  //           }
+  //         },
+  //         child: const Text('Create Project'),
+  //       );
+  //     } else if (state is ProjectLoadedState || state is ProjectUpdateState) {
+  //       return ElevatedButton(
+  //         onPressed: () {
+  //           if (validateForm(context)) {
+  //             // emit state button pressed
+  //             Project updatedProject = buildProject();
+  //             updatedProject =
+  //                 updatedProject.copyWithUpdateId(state.project!.id);
+  //
+  //             BlocProvider.of<ProjectOperationsBloc>(context)
+  //                 .add(SaveChangesButtonPressed(project: updatedProject));
+  //           }
+  //         },
+  //         child: const Text('Save Project'),
+  //       );
+  //     } else {
+  //       return const Text('Error loading project status');
+  //     }
+  //   }, listener: (context, state) {
+  //     if (state is ProjectCreated || state is ProjectUpdated) {
+  //       clearForm();
+  //       // update cubit
+  //       BlocProvider.of<ProjectCubit>(context).updateProject(state.project!);
+  //       Navigator.of(context).pop();
+  //     }
+  //   });
+  // }
 
   bool validateForm(BuildContext context) {
     if (_formKey.currentState!.validate()) {

@@ -9,6 +9,7 @@ import 'package:mimbo/presentation/screens/create_project_screen.dart';
 import 'package:mimbo/presentation/screens/create_user_screen.dart';
 
 import '../../data/constants.dart';
+import '../../data/models/projects.dart';
 import '../../data/utils/date_tools.dart';
 import '../../logic/bloc/user_loader_bloc.dart';
 import '../../logic/bloc/user_loader_bloc.dart';
@@ -620,5 +621,61 @@ class CancelProjectCreationButton extends StatelessWidget {
           Navigator.of(context).pop();
         },
         child: const Text('Cancel'));
+  }
+}
+
+class SaveProjectButtonSelector extends StatelessWidget {
+  Function validateForm;
+  Function clearForm;
+  Function buildProject;
+
+  SaveProjectButtonSelector({
+    required this.validateForm,
+    required this.clearForm,
+    required this.buildProject,
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocConsumer<ProjectCubit, ProjectState>(builder: (context, state) {
+      if (state is ProjectInitial || state is ProjectDeleteState) {
+        return ElevatedButton(
+          onPressed: () {
+            if (validateForm(context)) {
+              // emit state button pressed
+              Project project = buildProject();
+              BlocProvider.of<ProjectOperationsBloc>(context)
+                  .add(CreateProjectButtonPressed(project: project));
+            }
+          },
+          child: const Text('Create Project'),
+        );
+      } else if (state is ProjectLoadedState || state is ProjectUpdateState) {
+        return ElevatedButton(
+          onPressed: () {
+            if (validateForm(context)) {
+              // emit state button pressed
+              Project updatedProject = buildProject();
+              updatedProject =
+                  updatedProject.copyWithUpdateId(state.project!.id);
+
+              BlocProvider.of<ProjectOperationsBloc>(context)
+                  .add(SaveChangesButtonPressed(project: updatedProject));
+            }
+          },
+          child: const Text('Save Project'),
+        );
+      } else {
+        return const Text('Error loading project status');
+      }
+    }, listener: (context, state) {
+      if (state is ProjectCreated || state is ProjectUpdated) {
+        clearForm();
+        // update cubit
+        BlocProvider.of<ProjectCubit>(context).updateProject(state.project!);
+        Navigator.of(context).pop();
+      }
+    });
   }
 }
