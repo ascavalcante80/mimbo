@@ -116,7 +116,12 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
         if (state is ProjectLoaded ||
             state is ProjectCreated ||
             state is ProjectUpdated) {
+          // update the project in the project cubit
           BlocProvider.of<ProjectCubit>(context).updateProject(state.project!);
+          // update user cubit
+          final userCubit = BlocProvider.of<MimUserCubit>(context);
+          userCubit.state.user!.projectIds.add(state.project!.id);
+
           Navigator.of(context).pop();
         }
       },
@@ -149,7 +154,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
 
   BlocConsumer saveProjectButtonSelector() {
     return BlocConsumer<ProjectCubit, ProjectState>(builder: (context, state) {
-      if (state is ProjectInitial) {
+      if (state is ProjectInitial || state is ProjectDeleteState) {
         return ElevatedButton(
           onPressed: () {
             if (validateForm(context)) {

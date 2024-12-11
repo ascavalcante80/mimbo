@@ -531,6 +531,8 @@ class ProjectButtonsOperations extends StatelessWidget {
       if (state is ProjectDeleted) {
         // remove project from project cubit
         BlocProvider.of<ProjectCubit>(context).deleteProject(state.project!);
+        BlocProvider.of<MimUserCubit>(context)
+            .removeUserProject(state.project!.id);
 
         // display a snack bar
         ScaffoldMessenger.of(context).showSnackBar(
@@ -556,6 +558,8 @@ class ProjectButtonsOperations extends StatelessWidget {
       if (state is ProjectCreated) {
         // update cubit
         BlocProvider.of<ProjectCubit>(context).loadProject(state.project!);
+        BlocProvider.of<MimUserCubit>(context).addUserProject(state.project!.id);
+        
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: const Text('Project created'),
@@ -590,11 +594,7 @@ class EditProjectButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextButton(
         onPressed: () {
-          // final projectCubit = BlocProvider.of<ProjectCubit>(context);
-          // BlocProvider.of<ProjectOperationsBloc>(context).add(
-          //     EditProjectButtonPressed(project: projectCubit.state.project!));
           Navigator.of(context).pushNamed(CreateProjectScreen.routeName);
-
         },
         child: const Text('Edit project'));
   }

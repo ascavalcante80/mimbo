@@ -7,6 +7,7 @@ import 'package:meta/meta.dart';
 import 'package:mimbo/data/constants.dart';
 import 'package:mimbo/data/models/users.dart';
 import 'package:mimbo/data/repositories/firebase_manager.dart';
+import 'package:mimbo/logic/cubits/user_cubit.dart';
 
 import '../../data/models/projects.dart';
 
@@ -43,6 +44,9 @@ class ProjectOperationsBloc
       String? id = await firestoreManager.createProject(project);
       if (id != null) {
         Project? projectCreated = project.copyWithUpdateId(id);
+        MimUser? user = await firestoreManager.getUserByID(project.ownerId);
+        user!.projectIds.add(id);
+        firestoreManager.updateUser(user);
         emit(ProjectCreated(project: projectCreated));
       } else {
         emit(ProjectOperationsError(error: ProjectErrors.firestoreError));

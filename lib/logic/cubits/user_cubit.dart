@@ -20,6 +20,15 @@ class MimUserCubit extends Cubit<UserState> {
     super.onChange(change);
   }
 
+  void addUserProject(String projectId) {
+    MimUser? user = state.user;
+    if (user != null) {
+      user.projectIds.add(projectId);
+      log('User project added : $projectId');
+      emit(UserUpdate(user: user));
+    }
+  }
+
   void removeUserProject(String projectId) {
     MimUser? user = state.user;
     if (user != null) {
