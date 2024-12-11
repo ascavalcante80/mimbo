@@ -117,11 +117,13 @@ class FirestoreManager {
     /// The [getProjectByID] method is a method that searches for a [Project] in
     /// the Firestore database by its ID. It returns the [Project] if it
     /// exists, otherwise it returns null.
-
     Project? project;
+
     await projectsCollection.doc(id).get().then((value) {
       if (value.exists) {
         project = Project.fromDocumentSnapshot(value);
+      } else {
+        throw ProjectNotFoundException();
       }
     });
     return project;
@@ -246,6 +248,14 @@ class FirestoreManager {
     });
     return feedInfo;
   }
+}
+
+class UserNotFoundException implements Exception {
+  String errorMessage() => 'User not found';
+}
+
+class ProjectNotFoundException implements Exception {
+  String errorMessage() => 'Project not found';
 }
 
 class IDAlreadyExistsException implements Exception {

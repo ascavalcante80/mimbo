@@ -121,7 +121,7 @@ class _LabRoomState extends State<LabRoom> {
       children: [
         Text('Welcome to the Lab Room'),
         Text('🧪'),
-        ProjectOperationsButton(),
+        ProjectButtonsOperations(),
       ],
     );
   }
@@ -146,7 +146,7 @@ class ProfileScreen extends StatelessWidget {
                   createdAt: DateTime.now(),
                   birthdate: DateTime.now(),
                   gender: UserGender.notBinary);
-              BlocProvider.of<MimUserCubit>(context).updateUser(mimUser);
+              BlocProvider.of<MimUserCubit>(context).loadUser(mimUser);
             },
             child: Text('change username')),
         Text('👤'),

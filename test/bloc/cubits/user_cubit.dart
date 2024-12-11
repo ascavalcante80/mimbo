@@ -23,7 +23,7 @@ void main() {
         projectIds: ['projectId'],
       );
 
-      userCubit.updateUser(userMatcher);
+      userCubit.loadUser(userMatcher);
       expect(userCubit.state.user, userMatcher,
           reason: 'MimUser must be the same as the one created');
       MimUser userUpdated = MimUser(
@@ -36,7 +36,7 @@ void main() {
         projectIds: ['projectId'],
       );
 
-      userCubit.updateUser(userUpdated);
+      userCubit.loadUser(userUpdated);
 
       expect(userCubit.state.user, userUpdated,
           reason: 'MimUser must be the same as the one updated');

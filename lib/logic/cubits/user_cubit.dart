@@ -2,21 +2,30 @@ import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:mimbo/logic/bloc/user_bloc.dart';
 
 import '../../data/constants.dart';
 import '../../data/models/users.dart';
 
-class MimUserCubit extends Cubit<UserState> {
-  MimUserCubit() : super(UserInitialState());
+part 'user_state.dart';
 
-  void updateUser(MimUser user) => emit(UserUpdatedState(user: user));
+class MimUserCubit extends Cubit<UserState> {
+  MimUserCubit() : super(UserInitial());
+
+  void loadUser(MimUser user) => emit(UserLoaded(user: user));
 
   @override
   void onChange(Change<UserState> change) {
     // TODO: implement onChange
     log('current user state :${change.currentState.user} => next user state :${change.nextState.user}');
-
     super.onChange(change);
+  }
+
+  void removeUserProject(String projectId) {
+    MimUser? user = state.user;
+    if (user != null) {
+      user.projectIds.remove(projectId);
+      log('User project removed : $projectId');
+      emit(UserUpdate(user: user));
+    }
   }
 }

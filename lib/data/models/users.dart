@@ -26,6 +26,18 @@ class MimUser extends Equatable {
     assert(username.trim().isNotEmpty);
   }
 
+  MimUser copyWith(MimUser mimUserToCopy) {
+    return MimUser(
+      id: mimUserToCopy.id,
+      username: mimUserToCopy.username,
+      name: mimUserToCopy.name,
+      createdAt: mimUserToCopy.createdAt,
+      birthdate: mimUserToCopy.birthdate,
+      gender: mimUserToCopy.gender,
+      projectIds: List<String>.from(mimUserToCopy.projectIds),
+    );
+  }
+
   factory MimUser.fromJson(Map<String, dynamic> json) {
     return MimUser(
       id: json['id'],

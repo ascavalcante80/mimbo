@@ -40,12 +40,16 @@ enum AppCategory {
   weather,
 }
 
-enum ProjectError {
+enum LoaderErrorType {
   firestoreError,
   projectNotFound,
   projectOwnerNotFound,
+  errorLoadingProject,
+  errorLoadingUser,
+  userNotFound,
 }
 
-enum UserError {
+enum ProjectErrors {
   firestoreError,
+  projectNotFound,
 }

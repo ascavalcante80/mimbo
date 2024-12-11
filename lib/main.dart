@@ -11,14 +11,16 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:mimbo/logic/bloc/user_bloc.dart';
+import 'package:mimbo/logic/bloc/user_loader_bloc.dart';
+import 'package:mimbo/presentation/screens/create_user_screen.dart';
 import 'package:mimbo/presentation/widget/widgets.dart';
 
 import 'firebase_options.dart';
-import 'logic/bloc/project_bloc.dart';
+import 'logic/bloc/project_operations_bloc.dart';
 import 'logic/cubits/page_controller_cubit.dart';
 import 'logic/cubits/project_cubit.dart';
 import 'logic/cubits/user_cubit.dart';
+import 'presentation/screens/create_project_screen.dart';
 import 'presentation/screens/home_screen.dart';
 import 'presentation/screens/login_screen.dart';
 
@@ -71,13 +73,13 @@ class MyApp extends StatelessWidget {
           create: (context) => ProjectCubit(),
         ),
         BlocProvider(
-          create: (context) => UserBloc(),
+          create: (context) => UserLoaderBloc(),
         ),
         BlocProvider(
           create: (context) => PageControllerCubit(),
         ),
         BlocProvider(
-          create: (context) => ProjectButtonBloc(),
+          create: (context) => ProjectOperationsBloc(),
         )
       ],
       child: MaterialApp(
@@ -95,6 +97,10 @@ class MyApp extends StatelessWidget {
         routes: {
           AuthGate.routeName: (context) => const AuthGate(),
           HomeScreen.routeName: (context) => const HomeScreen(),
+          CreateMimUserScreen.routeName: (context) =>
+              const CreateMimUserScreen(),
+          CreateProjectScreen.routeName: (context) =>
+              const CreateProjectScreen(),
         },
 
         theme: ThemeData(

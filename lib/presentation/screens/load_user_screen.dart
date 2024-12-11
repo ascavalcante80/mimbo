@@ -6,11 +6,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:mimbo/logic/bloc/user_bloc.dart';
-import 'package:mimbo/presentation/widget/widgets.dart';
+import 'package:mimbo/logic/bloc/user_loader_bloc.dart';
 
-import '../../data/repositories/firebase_manager.dart';
-import '../../data/repositories/user_manager.dart';
+import 'package:mimbo/presentation/widget/widgets.dart';
 
 class UserLoadingScreen extends StatefulWidget {
   /// The [UserLoadingScreen] is displayed when the user is signed in and
@@ -43,7 +41,7 @@ class _UserLoadingScreenState extends State<UserLoadingScreen> {
     /// error message.
 
     String userId = FirebaseAuth.instance.currentUser!.uid;
-    BlocProvider.of<UserBloc>(context).add(GetUserEvent(userId: userId));
+    BlocProvider.of<UserLoaderBloc>(context).add(GetUserEvent(userId: userId));
   }
 
   @override

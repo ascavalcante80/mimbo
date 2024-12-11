@@ -4,15 +4,18 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
-import 'package:mimbo/logic/bloc/project_bloc.dart';
-import 'package:mimbo/logic/bloc/user_bloc.dart';
+import 'package:mimbo/logic/bloc/project_operations_bloc.dart';
+import 'package:mimbo/presentation/screens/create_project_screen.dart';
 import 'package:mimbo/presentation/screens/create_user_screen.dart';
 
 import '../../data/constants.dart';
 import '../../data/utils/date_tools.dart';
+import '../../logic/bloc/user_loader_bloc.dart';
+import '../../logic/bloc/user_loader_bloc.dart';
 import '../../logic/cubits/page_controller_cubit.dart';
 import '../../logic/cubits/project_cubit.dart';
 import '../../logic/cubits/user_cubit.dart';
+
 import '../screens/home_screen.dart';
 import '../screens/login_screen.dart';
 
@@ -268,40 +271,50 @@ class LoadUserDisplay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<UserBloc, UserState>(builder: (context, state) {
-      if (state is UserLoadingState) {
-        return const Text('Loading user...');
-      } else if (state is LoadingUserProjectsState) {
-        return const Text('Loading projects...');
-      } else if (state is ErrorLoadingUserProject ||
-          state is ErrorLoadingUser) {
-        return const Text('An error occurred');
-      } else if (state is UserLoadedState) {
-        return const Text('Loading complete!');
-      } else {
-        return const Text('Welcome to Mimbo');
-      }
-    }, listener: (context, state) {
-      if (state is UserLoadedState) {
-        BlocProvider.of<MimUserCubit>(context).updateUser(state.user!);
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const HomeScreen(),
-          ),
-        );
-      }
-
-      if (state is UserNotFoundState) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const CreateMimUserScreen(),
-          ),
-        );
-      }
-      // push to the next screen when all is set
-    });
+    return Column(
+      children: [
+        BlocConsumer<UserLoaderBloc, UserLoaderState>(
+            builder: (context, state) {
+          if (state is LoadingUserState) {
+            return const Text('Loading user...');
+          } else if (state is ErrorLoadingUserState) {
+            if (state.errorType == LoaderErrorType.userNotFound) {
+              return const Text('User not found');
+            } else {
+              return const Text('An error occurred trying to load user');
+            }
+          } else if (state is UserLoadedState) {
+            return const Text('User loaded!');
+          } else if (state is LoadingProjectState) {
+            return const Text('Loading project...');
+          } else if (state is ErrorLoadingProjectState) {
+            if (state.errorType == LoaderErrorType.projectNotFound) {
+              return const Text('Project not found');
+            } else {
+              return const Text('An error occurred trying to load project');
+            }
+          } else if (state is UsersProjectLoadedState) {
+            return const Text('Project loaded!');
+          } else if (state is LoadingCompleteState) {
+            return const Text('Loading complete');
+          } else {
+            return const Text('Welcome to Mimbo');
+          }
+        }, listener: (context, state) {
+          if (state is LoadingCompleteState) {
+            BlocProvider.of<MimUserCubit>(context).loadUser(state.mimUser!);
+            if (state.project != null) {
+              BlocProvider.of<ProjectCubit>(context)
+                  .updateProject(state.project!);
+            }
+            // go to home screen
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => const HomeScreen()),
+            );
+          }
+        })
+      ],
+    );
   }
 }
 
@@ -487,66 +500,33 @@ class _KeywordsInputState extends State<KeywordsInput> {
   }
 }
 
-class ProjectOperationsButton extends StatelessWidget {
-  const ProjectOperationsButton({super.key});
+class ProjectButtonsOperations extends StatelessWidget {
+  const ProjectButtonsOperations({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<ProjectButtonBloc, ProjectState>(
-      listener: (context, state) {
-        if (state is ErrorDeletingProjectState) {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text('Error deleting project'),
-          ));
-        } else if (state is ProjectCreatedState) {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text('Project created!'),
-          ));
-        } else if (state is ProjectUpdatedState) {
-          log('project updated!');
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text('Project updated!'),
-          ));
-        }
-      },
-      builder: (context, state) {
-        if (state is SavingProjectState) {
-          return const CircularProgressIndicator();
-        } else if (state is ProjectLoadedState ||
-            state is ProjectUpdatedState ||
-            state is ProjectCreatedState) {
-          return Column(
-            children: [
-              TextButton(
-                  onPressed: () {
-                    BlocProvider.of<PageControllerCubit>(context)
-                        .updateCurrentPageIndex(3);
-                  },
-                  child: const Text('Edit project')),
-              TextButton(
-                  onPressed: () {
-                    // set project state to null
-                    BlocProvider.of<ProjectButtonBloc>(context).add(
-                        DeleteProjectButtonPressed(project: state.project!));
-
-                    BlocProvider.of<ProjectCubit>(context)
-                        .deleteProject(state.project!);
-                  },
-                  child: const Text('Delete project')),
-            ],
-          );
-        } else if (state is ErrorSavingProjectSate) {
-          return const Text('Error loading project info');
-        } else {
-          return TextButton(
+    return BlocConsumer<ProjectOperationsBloc, ProjectOperationsState>(
+        builder: (context, state) {
+          if (state is ProjectOperationsInitial) {
+            return TextButton(
               onPressed: () {
-                log('Create Project');
-                BlocProvider.of<PageControllerCubit>(context)
-                    .updateCurrentPageIndex(3);
+                Navigator.pushNamed(context, CreateProjectScreen.routeName);
               },
-              child: const Text('Create Profile'));
-        }
-      },
-    );
+              child: const Text('Create project'),
+            );
+          } else if (state is ProjectOperationStarted) {
+            return const CircularProgressIndicator();
+          } else if (state is ProjectCreated) {
+            return const Column(
+              children: [
+                Text('edit project'),
+                Text('delete project'),
+              ],
+            );
+          } else {
+            return const Text('');
+          }
+        },
+        listener: (context, state) {});
   }
 }
