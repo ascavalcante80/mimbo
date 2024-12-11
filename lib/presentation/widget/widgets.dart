@@ -603,3 +603,22 @@ class EditProjectButton extends StatelessWidget {
         child: const Text('Edit project'));
   }
 }
+
+class CancelProjectCreationButton extends StatelessWidget {
+  Function clearForm;
+
+  CancelProjectCreationButton({required this.clearForm, super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+        onPressed: () {
+          // clear the form
+          clearForm();
+
+          // return to the lab room
+          Navigator.of(context).pop();
+        },
+        child: const Text('Cancel'));
+  }
+}

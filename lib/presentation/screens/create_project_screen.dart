@@ -131,25 +131,13 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
         } else {
           return Row(
             children: [
-              cancelButton(),
+              CancelProjectCreationButton(clearForm: clearForm),
               saveProjectButtonSelector(),
             ],
           );
         }
       },
     );
-  }
-
-  ElevatedButton cancelButton() {
-    return ElevatedButton(
-        onPressed: () {
-          // clear the form
-          clearForm();
-
-          // return to the lab room
-          Navigator.of(context).pop();
-        },
-        child: const Text('Cancel'));
   }
 
   BlocConsumer saveProjectButtonSelector() {
