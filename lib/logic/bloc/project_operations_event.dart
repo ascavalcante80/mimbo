@@ -1,6 +1,5 @@
 part of 'project_operations_bloc.dart';
 
-@immutable
 sealed class ProjectOperationsEvent {}
 
 final class SaveChangesButtonPressed extends ProjectOperationsEvent {
@@ -25,4 +24,10 @@ final class DeleteProjectButtonPressed extends ProjectOperationsEvent {
   final Project project;
 
   DeleteProjectButtonPressed({required this.project});
+}
+
+final class ProjectHasBeenLoaded extends ProjectOperationsEvent {
+  final Project project;
+
+  ProjectHasBeenLoaded({required this.project});
 }

@@ -34,6 +34,8 @@ class ProjectOperationsBloc
       await updateProject(event.project, emit);
     } else if (event is DeleteProjectButtonPressed) {
       await deleteProject(event.project, emit);
+    } else if (event is ProjectHasBeenLoaded) {
+      emit(ProjectLoaded(project: event.project));
     }
   }
 

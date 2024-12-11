@@ -162,7 +162,6 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
               Project project = buildProject();
               BlocProvider.of<ProjectOperationsBloc>(context)
                   .add(CreateProjectButtonPressed(project: project));
-              clearForm();
             }
           },
           child: const Text('Create Project'),
@@ -172,9 +171,12 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
           onPressed: () {
             if (validateForm(context)) {
               // emit state button pressed
+              Project updatedProject = buildProject();
+              updatedProject =
+                  updatedProject.copyWithUpdateId(state.project!.id);
+
               BlocProvider.of<ProjectOperationsBloc>(context)
-                  .add(SaveChangesButtonPressed(project: project));
-              clearForm();
+                  .add(SaveChangesButtonPressed(project: updatedProject));
             }
           },
           child: const Text('Save Project'),
@@ -184,6 +186,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
       }
     }, listener: (context, state) {
       if (state is ProjectCreated || state is ProjectUpdated) {
+        clearForm();
         // update cubit
         BlocProvider.of<ProjectCubit>(context).updateProject(state.project!);
         Navigator.of(context).pop();

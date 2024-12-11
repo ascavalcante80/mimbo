@@ -305,7 +305,10 @@ class LoadUserDisplay extends StatelessWidget {
             BlocProvider.of<MimUserCubit>(context).loadUser(state.mimUser!);
             if (state.project != null) {
               BlocProvider.of<ProjectCubit>(context)
-                  .updateProject(state.project!);
+                  .loadProject(state.project!);
+
+              BlocProvider.of<ProjectOperationsBloc>(context)
+                  .add(ProjectHasBeenLoaded(project: state.project!));
             }
             // go to home screen
             Navigator.of(context).pushReplacement(
@@ -558,8 +561,9 @@ class ProjectButtonsOperations extends StatelessWidget {
       if (state is ProjectCreated) {
         // update cubit
         BlocProvider.of<ProjectCubit>(context).loadProject(state.project!);
-        BlocProvider.of<MimUserCubit>(context).addUserProject(state.project!.id);
-        
+        BlocProvider.of<MimUserCubit>(context)
+            .addUserProject(state.project!.id);
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: const Text('Project created'),
