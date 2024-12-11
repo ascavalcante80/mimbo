@@ -95,7 +95,10 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
 
   void fillForm(BuildContext context) {
     // bloc has project loaded state
-    if (BlocProvider.of<ProjectCubit>(context).state is ProjectLoadedState) {
+    final projectCubit = BlocProvider.of<ProjectCubit>(context);
+
+    if (projectCubit.state is ProjectLoadedState ||
+        projectCubit.state is ProjectUpdateState) {
       project = BlocProvider.of<ProjectCubit>(context).state.project!;
       _nameController.text = project.name;
       _descriptionController.text = project.description;
@@ -110,9 +113,11 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
     return BlocConsumer<ProjectOperationsBloc, ProjectOperationsState>(
       listener: (context, state) {
         // return to the lab room
-        if (state is ProjectOperationCompleted) {
-          BlocProvider.of<PageControllerCubit>(context)
-              .updateCurrentPageIndex(0);
+        if (state is ProjectLoaded ||
+            state is ProjectCreated ||
+            state is ProjectUpdated) {
+          BlocProvider.of<ProjectCubit>(context).updateProject(state.project!);
+          Navigator.of(context).pop();
         }
       },
       builder: (context, state) {
@@ -157,7 +162,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
           },
           child: const Text('Create Project'),
         );
-      } else if (state is ProjectLoadedState) {
+      } else if (state is ProjectLoadedState || state is ProjectUpdateState) {
         return ElevatedButton(
           onPressed: () {
             if (validateForm(context)) {
@@ -173,8 +178,11 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
         return const Text('Error loading project status');
       }
     }, listener: (context, state) {
-      // return to the lab room
-      Navigator.of(context).pop();
+      if (state is ProjectCreated || state is ProjectUpdated) {
+        // update cubit
+        BlocProvider.of<ProjectCubit>(context).updateProject(state.project!);
+        Navigator.of(context).pop();
+      }
     });
   }
 

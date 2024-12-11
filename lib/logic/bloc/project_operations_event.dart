@@ -10,9 +10,15 @@ final class SaveChangesButtonPressed extends ProjectOperationsEvent {
 }
 
 final class CreateProjectButtonPressed extends ProjectOperationsEvent {
-  final Project project;
+  Project project;
 
   CreateProjectButtonPressed({required this.project});
+}
+
+final class EditProjectButtonPressed extends ProjectOperationsEvent {
+  final Project project;
+
+  EditProjectButtonPressed({required this.project});
 }
 
 final class DeleteProjectButtonPressed extends ProjectOperationsEvent {

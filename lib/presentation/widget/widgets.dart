@@ -507,30 +507,95 @@ class ProjectButtonsOperations extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<ProjectOperationsBloc, ProjectOperationsState>(
         builder: (context, state) {
-      if (state is ProjectOperationsInitial) {
+      if (state is ProjectOperationsInitial || state is ProjectDeleted) {
         return TextButton(
-          onPressed: () {
-            Navigator.pushNamed(context, CreateProjectScreen.routeName);
-          },
-          child: const Text('Create project'),
-        );
+            onPressed: () {
+              Navigator.pushNamed(context, CreateProjectScreen.routeName);
+            },
+            child: const Text('Create project'));
       } else if (state is ProjectOperationStarted) {
         return const CircularProgressIndicator();
       } else if (state is ProjectCreated ||
-          state is ProjectOperationCompleted) {
+          state is ProjectUpdated ||
+          state is ProjectLoaded) {
         return const Column(
           children: [
-            Text('edit project'),
-            Text('delete project'),
+            EditProjectButton(),
+            DeleteProjectButton(),
           ],
         );
       } else {
         return Text('estado unknown ${state.toString()}');
       }
     }, listener: (context, state) {
-      if (state is ProjectOperationCompleted) {
-        Navigator.of(context).pop();
+      if (state is ProjectDeleted) {
+        // remove project from project cubit
+        BlocProvider.of<ProjectCubit>(context).deleteProject(state.project!);
+
+        // display a snack bar
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('Project deleted'),
+            duration: const Duration(seconds: 2),
+          ),
+        );
+      }
+
+      if (state is ProjectUpdated) {
+        // update cubit
+        BlocProvider.of<ProjectCubit>(context).updateProject(state.project!);
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('Project updated'),
+            duration: const Duration(seconds: 2),
+          ),
+        );
+      }
+
+      if (state is ProjectCreated) {
+        // update cubit
+        BlocProvider.of<ProjectCubit>(context).loadProject(state.project!);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('Project created'),
+            duration: const Duration(seconds: 2),
+          ),
+        );
       }
     });
+  }
+}
+
+class DeleteProjectButton extends StatelessWidget {
+  const DeleteProjectButton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+        onPressed: () {
+          // fetch the project from project cubit
+          final projectCubit = BlocProvider.of<ProjectCubit>(context);
+          BlocProvider.of<ProjectOperationsBloc>(context).add(
+              DeleteProjectButtonPressed(project: projectCubit.state.project!));
+        },
+        child: const Text('Delete project'));
+  }
+}
+
+class EditProjectButton extends StatelessWidget {
+  const EditProjectButton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+        onPressed: () {
+          // final projectCubit = BlocProvider.of<ProjectCubit>(context);
+          // BlocProvider.of<ProjectOperationsBloc>(context).add(
+          //     EditProjectButtonPressed(project: projectCubit.state.project!));
+          Navigator.of(context).pushNamed(CreateProjectScreen.routeName);
+
+        },
+        child: const Text('Edit project'));
   }
 }

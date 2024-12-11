@@ -16,10 +16,6 @@ final class ProjectOperationStarted extends ProjectOperationsState {
   }
 }
 
-final class ProjectOperationCompleted extends ProjectOperationsState {
-  ProjectOperationCompleted({required super.project});
-}
-
 final class ProjectCreated extends ProjectOperationsState {
   ProjectCreated({required super.project}) {
     assert(project != null);
@@ -39,7 +35,7 @@ final class ProjectUpdated extends ProjectOperationsState {
 }
 
 final class ProjectDeleted extends ProjectOperationsState {
-  ProjectDeleted() : super(project: null);
+  ProjectDeleted({required super.project});
 }
 
 final class ProjectOperationsError extends ProjectOperationsState {

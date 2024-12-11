@@ -51,7 +51,6 @@ class ProjectOperationsBloc
       log('error: $e');
       emit(ProjectOperationsError(error: ProjectErrors.firestoreError));
     }
-    emit(ProjectOperationCompleted(project: project));
   }
 
   Future<void> updateProject(
@@ -60,11 +59,9 @@ class ProjectOperationsBloc
     try {
       await firestoreManager.updateProject(project);
       emit(ProjectUpdated(project: project));
-      emit(ProjectOperationCompleted(project: null));
     } catch (e) {
       emit(ProjectOperationsError(error: ProjectErrors.firestoreError));
     }
-    emit(ProjectOperationCompleted(project: project));
   }
 
   Future<void> deleteProject(
@@ -75,8 +72,7 @@ class ProjectOperationsBloc
       MimUser? user = await firestoreManager.getUserByID(project.ownerId);
       user!.projectIds.remove(project.id);
       await firestoreManager.updateUser(user);
-      emit(ProjectDeleted());
-      emit(ProjectOperationCompleted(project: null));
+      emit(ProjectDeleted(project: project));
     } catch (e) {
       emit(ProjectOperationsError(error: ProjectErrors.firestoreError));
     }
